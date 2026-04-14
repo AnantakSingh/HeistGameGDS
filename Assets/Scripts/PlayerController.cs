@@ -52,24 +52,12 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Text to flash when walk speed increases")]
     public TMPro.TextMeshProUGUI speedBoostText;
 
-    [Header("Global Timer & Alarm")]
-    public float timeRemaining = 40f;
-    
-    [Tooltip("Drag your Timer TextMeshPro object here")]
-    public TMPro.TextMeshProUGUI timerText;
-    
-    [Tooltip("Drag a red UI Image spanning the canvas here to act as the alarm overlay")]
-    public Image redAlarmScreen;
-    public float alarmFlashSpeed = 2f;
-    public float alarmMaxAlpha = 0.3f;
 
     [Header("Audio Effects")]
     public AudioSource movementAudioSource;
-    public AudioSource alarmAudioSource;
     public AudioClip sneakSound;
     public AudioClip runSound;
     public AudioClip jumpSound;
-    public AudioClip alarmSound;
     public AudioClip gameOverSound;
 
     public void AddScore(int amount)
@@ -122,13 +110,6 @@ public class PlayerController : MonoBehaviour
         if (jumpBoostText != null) jumpBoostText.gameObject.SetActive(false);
         if (speedBoostText != null) speedBoostText.gameObject.SetActive(false);
         
-        if (redAlarmScreen != null)
-        {
-            redAlarmScreen.gameObject.SetActive(false);
-            Color c = redAlarmScreen.color;
-            c.a = 0f;
-            redAlarmScreen.color = c;
-        }
     }
 
     private int lastKeyCount = -1;
@@ -137,7 +118,6 @@ public class PlayerController : MonoBehaviour
     {
         HandleMouseLook();
         HandleMovement();
-        HandleTimer();
         HandleInventoryUI();
     }
 
@@ -159,73 +139,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool timerStarted = false;
 
-    void HandleTimer()
-    {
-        if (timerText == null) return;
-        
-        // Stop evaluating timer/alarm logic if the game has ended
-        if (Time.timeScale == 0f) return;
-
-        // Display nothing if they haven't stolen anything yet
-        if (!hasStolenSomething)
-        {
-            timerText.text = "";
-            return;
-        }
-
-        // Initialize the random timer precisely when the first item is stolen
-        if (!timerStarted)
-        {
-            timeRemaining = Random.Range(20, 41); // Random int between 20 and 40
-            timerStarted = true;
-        }
-
-        // Tick down the timer if it has time left
-        if (timeRemaining > 0f)
-        {
-            timeRemaining -= Time.deltaTime;
-            
-            // Clamp timer to 0 to prevent negative numbers
-            if (timeRemaining <= 0f)
-            {
-                timeRemaining = 0f;
-            }
-        }
-
-        // Display text based on whether there's time remaining
-        if (timeRemaining > 0f)
-        {
-            timerText.text = "Searching for missing item: " + Mathf.Ceil(timeRemaining).ToString();
-        }
-        else
-        {
-            timerText.text = "Chasing suspect";
-            
-            // Trigger the repeating alarm sound
-            if (alarmAudioSource != null && alarmSound != null && !alarmAudioSource.isPlaying)
-            {
-                alarmAudioSource.clip = alarmSound;
-                alarmAudioSource.loop = true;
-                alarmAudioSource.Play();
-            }
-            
-            // Flashing red alarm screen effect
-            if (redAlarmScreen != null)
-            {
-                if (!redAlarmScreen.gameObject.activeSelf)
-                {
-                    redAlarmScreen.gameObject.SetActive(true);
-                }
-                
-                Color c = redAlarmScreen.color;
-                // Mathf.PingPong naturally bounces back and forth between 0 and your maximum alpha
-                c.a = Mathf.PingPong(Time.time * alarmFlashSpeed, alarmMaxAlpha);
-                redAlarmScreen.color = c;
-            }
-        }
-    }
 
     void LateUpdate()
     {
@@ -355,12 +269,6 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Guard"))
         {
             Debug.Log("Game Over! The player was caught by a guard.");
-            
-            // Silence the alarm
-            if (alarmAudioSource != null && alarmAudioSource.isPlaying)
-            {
-                alarmAudioSource.Stop();
-            }
             
             if (gameOverSound != null)
             {

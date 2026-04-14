@@ -26,12 +26,6 @@ public class ExitZone : MonoBehaviour
         {
             Debug.Log("Escaped! Triggering End Screen.");
             
-            // Silence the alarm if ringing
-            if (player.alarmAudioSource != null && player.alarmAudioSource.isPlaying)
-            {
-                player.alarmAudioSource.Stop();
-            }
-            
             if (gameFinishSound != null)
             {
                 AudioSource.PlayClipAtPoint(gameFinishSound, transform.position);

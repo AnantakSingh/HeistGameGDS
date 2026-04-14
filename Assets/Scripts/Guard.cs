@@ -16,6 +16,11 @@ public class Guard : MonoBehaviour
     [Tooltip("How many seconds the guard will keep chasing after the player leaves the vision box")]
     public float chaseLingerTime = 5f;
 
+    [Tooltip("How long the player must stay inside the vision collider before the guard enters chase mode. " +
+             "Gives the player a window to duck out of sight.")]
+    public float chaseGraceTime = 1f;
+    private float visionGraceTimer = 0f;  // counts UP while player is continuously in vision
+
     [Header("Audio")]
     public AudioSource movementAudioSource;
     public AudioClip walkSound;
@@ -25,9 +30,26 @@ public class Guard : MonoBehaviour
     private Transform playerTransform;
     private PlayerController playerController;
 
-    private enum State { Roam, Chase }
+    private enum State { Roam, Investigate, Chase }
     private State currentState;
     private float chaseTimer = 0f;
+
+    [Header("Camera Alert Settings")]
+    [Tooltip("How long the guard pauses at the investigate point before returning to roam.")]
+    public float investigateLingerTime = 4f;
+    private float investigateTimer = 0f;
+    private Vector3 investigateTarget;
+
+    [Header("Patrol Behaviour")]
+    [Tooltip("Range of seconds the guard wanders before stopping (min, max).")]
+    public Vector2 wanderDuration = new Vector2(5f, 10f);
+
+    [Tooltip("Range of seconds the guard stands still before wandering again (min, max).")]
+    public Vector2 stillDuration = new Vector2(5f, 15f);
+
+    private enum PatrolSubState { Wandering, Standing }
+    private PatrolSubState patrolSubState = PatrolSubState.Wandering;
+    private float patrolTimer = 0f;   // counts down to next sub-state switch
     
     public bool IsChasing { get { return currentState == State.Chase; } }
     
@@ -46,6 +68,9 @@ public class Guard : MonoBehaviour
         // Ensure starting state is initialized correctly
         agent.speed = roamSpeed;
         currentState = State.Roam;
+        // Start in a wander phase with a random duration
+        patrolSubState = PatrolSubState.Wandering;
+        patrolTimer = Random.Range(wanderDuration.x, wanderDuration.y);
         SetRandomDestination();
     }
 
@@ -53,25 +78,11 @@ public class Guard : MonoBehaviour
     {
         if (playerTransform == null || playerController == null) return;
 
-        // GLOBAL ALARM: If the player's timer hit 0, all guards go into permanent chase mode regardless of vision/distance
-        if (playerController.hasStolenSomething && playerController.timeRemaining <= 0f)
-        {
-            currentState = State.Chase;
-            agent.speed = chaseSpeed;
-            agent.SetDestination(playerTransform.position);
-            
-            // Check physical distance purely for catching
-            if (Vector3.Distance(transform.position, playerTransform.position) <= catchDistance)
-            {
-                Debug.Log("Player Caught by Guard during global alarm!");
-            }
-            return; // Skip normal vision/roam logic entirely
-        }
 
         switch (currentState)
         {
             case State.Roam:
-                // Calculate player's actual horizontal speed
+                // ── Vision / suspicion check (runs regardless of sub-state) ──
                 CharacterController playerCC = playerController.GetComponent<CharacterController>();
                 float playerSpeed = 0f;
                 if (playerCC != null)
@@ -80,23 +91,94 @@ public class Guard : MonoBehaviour
                     playerSpeed = flatVelocity.magnitude;
                 }
 
-                // Check if player has stolen something OR is moving faster than 4 (walking/running)
                 bool isDoingSomethingSuspicious = playerController.hasStolenSomething || playerSpeed > 5f;
+                bool permanentLookout = SecurityCamera.CameraAlertTriggered;
 
-                // Fire state change if suspicious AND inside the vision box
-                if (isDoingSomethingSuspicious && isPlayerInVision)
+                if (isPlayerInVision && (isDoingSomethingSuspicious || permanentLookout))
                 {
-                    currentState = State.Chase;
-                    agent.speed = chaseSpeed;
-                    chaseTimer = chaseLingerTime; // Initialize the linger timer to 5s
+                    // Count up while player stays in vision — only chase after the grace period
+                    visionGraceTimer += Time.deltaTime;
+                    if (visionGraceTimer >= chaseGraceTime)
+                    {
+                        visionGraceTimer = 0f;
+                        agent.isStopped  = false;
+                        currentState     = State.Chase;
+                        agent.speed      = chaseSpeed;
+                        chaseTimer       = chaseLingerTime;
+                        break;
+                    }
                 }
                 else
                 {
-                    // If arrived at random destination, pick a new one
-                    if (!agent.pathPending && agent.remainingDistance < 0.5f)
+                    // Player left vision or is no longer suspicious — reset the grace window
+                    visionGraceTimer = 0f;
+                }
+
+                // ── Patrol sub-state machine ──
+                patrolTimer -= Time.deltaTime;
+
+                switch (patrolSubState)
+                {
+                    case PatrolSubState.Wandering:
+                        // Keep walking; if we reached the current waypoint, pick a new one
+                        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+                            SetRandomDestination();
+
+                        // Time to stop and stand still?
+                        if (patrolTimer <= 0f)
+                        {
+                            patrolSubState = PatrolSubState.Standing;
+                            patrolTimer    = Random.Range(stillDuration.x, stillDuration.y);
+                            agent.isStopped = true;   // halts NavMesh movement cleanly
+                        }
+                        break;
+
+                    case PatrolSubState.Standing:
+                        // Time to start wandering again?
+                        if (patrolTimer <= 0f)
+                        {
+                            patrolSubState  = PatrolSubState.Wandering;
+                            patrolTimer     = Random.Range(wanderDuration.x, wanderDuration.y);
+                            agent.isStopped = false;
+                            SetRandomDestination();
+                        }
+                        break;
+                }
+                break;
+
+            case State.Investigate:
+                agent.isStopped = false;
+                agent.SetDestination(investigateTarget);
+
+                // Once we arrive, wait briefly then return to roam
+                if (!agent.pathPending && agent.remainingDistance < 0.5f)
+                {
+                    investigateTimer -= Time.deltaTime;
+                    if (investigateTimer <= 0f)
                     {
+                        currentState   = State.Roam;
+                        agent.speed    = roamSpeed;
+                        patrolSubState = PatrolSubState.Wandering;
+                        patrolTimer    = Random.Range(wanderDuration.x, wanderDuration.y);
                         SetRandomDestination();
                     }
+                }
+
+                // If the player walks into view while investigating, give them 1 second to duck out
+                if (isPlayerInVision)
+                {
+                    visionGraceTimer += Time.deltaTime;
+                    if (visionGraceTimer >= chaseGraceTime)
+                    {
+                        visionGraceTimer = 0f;
+                        currentState     = State.Chase;
+                        agent.speed      = chaseSpeed;
+                        chaseTimer       = chaseLingerTime;
+                    }
+                }
+                else
+                {
+                    visionGraceTimer = 0f;
                 }
                 break;
 
@@ -116,13 +198,15 @@ public class Guard : MonoBehaviour
                     chaseTimer -= Time.deltaTime;
                     
                     if (chaseTimer <= 0f)
-                    {
-                        // 5 seconds have passed without seeing the player, return to roam state
-                        currentState = State.Roam;
-                        agent.speed = roamSpeed;
-                        SetRandomDestination();
-                    }
-                }
+                        {
+                            // Lost the player; return to roam and start a fresh wander phase
+                            currentState   = State.Roam;
+                            agent.speed    = roamSpeed;
+                            agent.isStopped = false;
+                            patrolSubState = PatrolSubState.Wandering;
+                            patrolTimer    = Random.Range(wanderDuration.x, wanderDuration.y);
+                            SetRandomDestination();
+                        }              }
 
                 // Check physical distance purely for catching/game over
                 if (Vector3.Distance(transform.position, playerTransform.position) <= catchDistance)
@@ -159,6 +243,20 @@ public class Guard : MonoBehaviour
                 movementAudioSource.Pause();
             }
         }
+    }
+
+    /// <summary>
+    /// Called by SecurityCamera when a theft is detected on-camera.
+    /// Sends this guard to investigate the camera's world position.
+    /// </summary>
+    public void InvestigatePoint(Vector3 worldPosition)
+    {
+        investigateTarget = worldPosition;
+        investigateTimer = investigateLingerTime;
+        currentState = State.Investigate;
+        agent.speed = chaseSpeed; // Run to the scene of the crime
+        agent.SetDestination(worldPosition);
+        Debug.Log($"[Guard] '{name}' is investigating camera alert at {worldPosition}");
     }
 
     void SetRandomDestination()
