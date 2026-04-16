@@ -150,7 +150,7 @@ public class SecurityCamera : MonoBehaviour
         Vector3 stealPosition = playerTransform.position;
 
         Debug.Log($"[SecurityCamera] '{name}' caught the player stealing! Guards dispatching in 5 seconds...");
-        StartCoroutine(DispatchGuardsDelayed(stealPosition, 5f));
+        StartCoroutine(DispatchGuardsDelayed(stealPosition, 2f));
     }
 
     System.Collections.IEnumerator DispatchGuardsDelayed(Vector3 stealPosition, float delay)
