@@ -1,0 +1,621 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# 创建的文件:02.06.2023 16:27:40
+
+newmtl Lime__Material_273
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Material_274
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20817-01001.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20817-01001.jpg
+	map_bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20817-01001.jpg
+	bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20817-01001.jpg
+
+newmtl Lime__Material_277_001
+	Ns 10.0000
+	Ni 1.5000
+	d 0.3882
+	Tr 0.6118
+	Tf 0.3882 0.3882 0.3882 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Bump_20817-01001.jpg.jpg
+	bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Bump_20817-01001.jpg.jpg
+
+newmtl Lime__Material_261
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Material_262
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.2431 0.2431 0.2431
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Bump_0_20817-01001.jpg.jpg
+	bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Bump_0_20817-01001.jpg.jpg
+
+newmtl Lime__Material_263
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20817-01012.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20817-01012.jpg
+	map_bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20817-01012.jpg
+	bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20817-01012.jpg
+
+newmtl Lime__Mat3d66_1113687_63_1385
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.7529 0.7529 0.7529
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_d C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Alpha_20817-01012.jpg.jpg
+
+newmtl Lime__Mat3d66_1113687_64_6720
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.1451 0.1451 0.1451
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._m210818004.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._m210818004.jpg
+
+newmtl Lime__Mat3d66_1113687_58_7483
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.6743 0.6743 0.6743
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._m210818003.png
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._m210818003.png
+
+newmtl Lime__Mat3d66_1113687_59_3519
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.1872 0.1872 0.1872
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Mat3d66_1113687_60_3065
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Mat3d66_1113687_61_8341
+	Ns 10.0000
+	Ni 1.5000
+	d 0.3400
+	Tr 0.6600
+	Tf 0.3400 0.3400 0.3400 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Mat3d66_1113687_62_4379
+	Ns 10.0000
+	Ni 1.5000
+	d 0.0000
+	Tr 1.0000
+	Tf 0.0000 0.0000 0.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__mat_1113687_57_3165
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.9608 0.9608 0.9608
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__CRN_YY
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0078 0.0078 0.0078
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Material_2147462054
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Bump_f661d4030944.jpg
+	bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Bump_f661d4030944.jpg
+	map_refl C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Refl_f661d4030944.jpg
+
+newmtl Lime__CRN__007
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5725 0.5804 0.5843
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__CRN_lenses
+	Ns 10.0000
+	Ni 1.5000
+	d 0.8549
+	Tr 0.1451
+	Tf 0.8549 0.8549 0.8549 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20160416044751212241.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20160416044751212241.jpg
+
+newmtl Lime__CRN__005
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0980 0.0980 0.0980
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__CRN_lenses_002
+	Ns 10.0000
+	Ni 1.5000
+	d 0.9294
+	Tr 0.0706
+	Tf 0.9294 0.9294 0.9294 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20160416051703177622.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20160416051703177622.jpg
+
+newmtl Lime__CRN__002
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0980 0.0980 0.0980
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__mat_0117BXDSXT07014
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.3922 0.0353 0.4314
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0038.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0038.jpg
+
+newmtl Lime__mat_0117BXDSXT07015
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0078 0.0078 0.0078
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__mat_0117BXDSXT07016
+	Ns 10.0000
+	Ni 1.5000
+	d 0.0706
+	Tr 0.9294
+	Tf 0.0706 0.0706 0.0706 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__mat_0117BXDSXT07005
+	Ns 10.0000
+	Ni 1.5000
+	d 0.0039
+	Tr 0.9961
+	Tf 0.0039 0.0039 0.0039 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ke C:\Users\Administrator\Desktop\2023监控摄像头3D模型\02\maps\-1106813868-0037.jpg
+
+newmtl Lime__mat_0117BXDSXT07022
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.3373 0.3373 0.3373
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__mat_0117BXDSXT07029_1
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_refl C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Refl_-1106813868-0038.jpg.jpg
+
+newmtl Lime__Material_2147463419_001
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5725 0.5804 0.5843
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Material_1558
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0046.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0046.jpg
+	map_bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0035.jpg
+	bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0035.jpg
+
+newmtl Lime__mat_0117BXDSXT07024
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0392 0.0392 0.0392
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__mat_0117BXDSXT07028_1
+	Ns 10.0000
+	Ni 1.5000
+	d 0.0863
+	Tr 0.9137
+	Tf 0.0863 0.0863 0.0863 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4353 0.4941 0.6471
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_refl C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._Refl_-1106813868-0035.jpg.jpg
+
+newmtl Lime__mat_0117BXDSXT07028_2
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.6118 0.6118 0.6118
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl qingmo_aa34a467_c78c_4584_9417_1c472c6291da
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.3373 0.3373 0.3373
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__mat_0117BXDSXT07026
+	Ns 10.0000
+	Ni 1.5000
+	d 0.0000
+	Tr 1.0000
+	Tf 0.0000 0.0000 0.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__mat_0117BXDSXT07027
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0549 0.0902 0.0353
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Material_41
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0043.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0043.jpg
+	map_bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0028.jpg
+	bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._-1106813868-0028.jpg
+
+newmtl Lime__CRN_hero7_glass_clear
+	Ns 10.0000
+	Ni 1.5000
+	d 0.0000
+	Tr 1.0000
+	Tf 0.0000 0.0000 0.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__CRN_hero7_red_ill
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 1.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 1.0000 0.0000 0.0000
+
+newmtl Lime__CRN_hero_plastic_bl_gloss_001
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__CRN_hero_plastic_bl_gloss
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__w2
+	Ns 10.0000
+	Ni 1.5000
+	d 0.8941
+	Tr 0.1059
+	Tf 0.8941 0.8941 0.8941 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20160416045236459590.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._20160416045236459590.jpg
+
+newmtl Lime__hero7_
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0157 0.0157 0.0157
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Material_2147463411
+	Ns 10.0000
+	Ni 1.5000
+	d 0.0000
+	Tr 1.0000
+	Tf 0.0000 0.0000 0.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__CRN__004
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._2016041605274109647.jpg
+	map_Kd C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._2016041605274109647.jpg
+	map_bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._2016041605274109647.jpg
+	bump C:\Users\Administrator\Desktop\新建文件夹\maps\Lime._2016041605274109647.jpg
+
+newmtl Lime__CRN_archmodels95_043_002
+	Ns 10.0000
+	Ni 1.5000
+	d 0.0118
+	Tr 0.9882
+	Tf 0.0118 0.0118 0.0118 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.9490 0.9490 0.9490
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__Material_2147463410
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__CRN_archmodels95_043_003
+	Ns 10.0000
+	Ni 1.5000
+	d 0.9071
+	Tr 0.0929
+	Tf 0.9071 0.9071 0.9071 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lime__CRN_archmodels95_043_005
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.0078 0.0078 0.0078
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
