@@ -5,7 +5,6 @@ public class Valuable : MonoBehaviour
     [Header("Valuable Settings")]
     [Tooltip("Amount added to the player's score when stolen.")]
     public int value = 100;
-    public float pickupRadius = 2f;
     
     [Header("Audio")]
     public AudioClip valuableSound;
@@ -15,8 +14,7 @@ public class Valuable : MonoBehaviour
     public GameObject interactUI;
 
     private PlayerController playerController;
-
-    private bool wasInRange = false;
+    private bool inRange = false;
 
     private void Start()
     {
@@ -32,25 +30,6 @@ public class Valuable : MonoBehaviour
     void Update()
     {
         if (playerController == null) return;
-
-        // Check 2m radius
-        float distance = Vector3.Distance(transform.position, playerController.transform.position);
-        bool inRange = distance <= pickupRadius;
-        
-        // Toggle the UI based ONLY on enter/exit transitions to prevent multiple objects fighting over the same UI
-        if (interactUI != null)
-        {
-            if (inRange && !wasInRange)
-            {
-                interactUI.SetActive(true);
-                wasInRange = true;
-            }
-            else if (!inRange && wasInRange)
-            {
-                interactUI.SetActive(false);
-                wasInRange = false;
-            }
-        }
 
         // Wait for player to press 'E' or Left Click while in range
         if (inRange && (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0)))
@@ -70,6 +49,35 @@ public class Valuable : MonoBehaviour
             }
             
             Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<PlayerController>() != null)
+        {
+            inRange = true;
+            if (interactUI != null)
+            {
+                TMPro.TextMeshProUGUI textComponent = interactUI.GetComponent<TMPro.TextMeshProUGUI>();
+                if (textComponent != null)
+                {
+                    textComponent.text = "Press E to Steal ($" + value + ")";
+                }
+                interactUI.SetActive(true);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<PlayerController>() != null)
+        {
+            inRange = false;
+            if (interactUI != null)
+            {
+                interactUI.SetActive(false);
+            }
         }
     }
 }
