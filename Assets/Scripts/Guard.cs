@@ -26,6 +26,10 @@ public class Guard : MonoBehaviour
     public AudioClip walkSound;
     public AudioClip runSound;
 
+    [Header("Animation")]
+    [Tooltip("Drag the child GameObject with the Animator here")]
+    public Animator guardAnimator;
+
     private NavMeshAgent agent;
     private Transform playerTransform;
     private PlayerController playerController;
@@ -242,6 +246,22 @@ public class Guard : MonoBehaviour
             {
                 movementAudioSource.Pause();
             }
+        }
+
+        // --- Animation Logic ---
+        if (guardAnimator != null)
+        {
+            float targetSpeed = 0f;
+            
+            // If the guard is actively moving
+            if (agent.velocity.sqrMagnitude > 0.01f)
+            {
+                // Walk (0.5) when roaming, Run (1.0) when investigating or chasing
+                targetSpeed = (currentState == State.Roam) ? 0.5f : 1f;
+            }
+            
+            // Smoothly blend the speed parameter
+            guardAnimator.SetFloat("Speed", targetSpeed, 0.1f, Time.deltaTime);
         }
     }
 

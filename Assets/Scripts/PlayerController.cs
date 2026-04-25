@@ -60,6 +60,17 @@ public class PlayerController : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip gameOverSound;
 
+    [Header("Animation")]
+    [Tooltip("Drag the child GameObject with the Animator here")]
+    public Animator characterAnimator;
+
+    [Header("Alarm UI")]
+    [Tooltip("Drag your Red Alarm screen UI Image/Panel here")]
+    public GameObject alarmScreenElement;
+    public float alarmFlashSpeed = 5f;
+    private UnityEngine.UI.Image alarmImage;
+    private CanvasGroup alarmCanvasGroup;
+
     public void AddScore(int amount)
     {
         score += amount;
@@ -73,6 +84,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 velocity;
     private float verticalLookRotation = 0f;
     private bool isSneaking = false;
+    private Guard[] allGuards; // Cache all guards in the scene
 
     // To remember the camera's original designated offset
     private Vector3 defaultCameraLocalPos;
@@ -80,7 +92,15 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        allGuards = FindObjectsOfType<Guard>(); // Find all guards once
         
+        if (alarmScreenElement != null)
+        {
+            alarmImage = alarmScreenElement.GetComponent<UnityEngine.UI.Image>();
+            alarmCanvasGroup = alarmScreenElement.GetComponent<CanvasGroup>();
+            alarmScreenElement.SetActive(false);
+        }
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -119,6 +139,51 @@ public class PlayerController : MonoBehaviour
         HandleMouseLook();
         HandleMovement();
         HandleInventoryUI();
+        HandleAlarmUI();
+    }
+
+    void HandleAlarmUI()
+    {
+        if (alarmScreenElement == null) return;
+
+        bool isGuardClose = false;
+        
+        // Check if any guard is chasing and within 12 units
+        foreach (Guard guard in allGuards)
+        {
+            if (guard != null && guard.IsChasing && Vector3.Distance(transform.position, guard.transform.position) <= 12f)
+            {
+                isGuardClose = true;
+                break;
+            }
+        }
+
+        if (isGuardClose)
+        {
+            alarmScreenElement.SetActive(true);
+            
+            // Calculate a pulsing value between 0.2 and 0.8 using sine wave
+            float pulse = 0.5f + Mathf.Sin(Time.time * alarmFlashSpeed) * 0.3f;
+            
+            if (alarmCanvasGroup != null)
+            {
+                alarmCanvasGroup.alpha = pulse;
+            }
+            else if (alarmImage != null)
+            {
+                Color c = alarmImage.color;
+                c.a = pulse;
+                alarmImage.color = c;
+            }
+        }
+        else
+        {
+            // Reset and hide when safe
+            if (alarmScreenElement.activeSelf)
+            {
+                alarmScreenElement.SetActive(false);
+            }
+        }
     }
 
     void HandleInventoryUI()
@@ -179,6 +244,11 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             
+            if (characterAnimator != null)
+            {
+                characterAnimator.SetTrigger("Jump");
+            }
+            
             if (jumpSound != null)
             {
                 AudioSource.PlayClipAtPoint(jumpSound, transform.position);
@@ -231,6 +301,23 @@ public class PlayerController : MonoBehaviour
             {
                 movementAudioSource.Pause();
             }
+        }
+
+        // 7. Handle Animations
+        if (characterAnimator != null)
+        {
+            float speedPercent = 0f;
+            if (move.sqrMagnitude > 0.01f)
+            {
+                // isWalking in code actually means the fast speed (Run), and default is sneak (Walk)
+                speedPercent = isWalking ? 1f : 0.5f; 
+            }
+            
+            // Smoothly blend the Speed parameter
+            characterAnimator.SetFloat("Speed", speedPercent, 0.1f, Time.deltaTime);
+            
+            // Pass grounded state (useful if you want to transition out of Jump animation when landing)
+            characterAnimator.SetBool("IsGrounded", isGrounded);
         }
     }
 

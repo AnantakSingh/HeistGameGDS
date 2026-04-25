@@ -4,28 +4,24 @@ public class Key : MonoBehaviour
 {
     [Header("Key Settings")]
     public float rotationSpeed = 90f;
-    public float pickupRadius = 2f;
     
     [Header("Audio")]
     public AudioClip keySound;
     
     [Header("UI Interaction")]
-    [Tooltip("Drag the interaction UI Text GameObject here. It will hide/show based on distance.")]
-    public GameObject interactUI;
+    [Tooltip("Drag a UI Canvas Prefab here to spawn it when the player is close.")]
+    public GameObject interactUIPrefab;
+    
+    [Tooltip("How high above the key should the UI spawn?")]
+    public float uiSpawnHeight = 1f;
 
     private PlayerController playerController;
-
-    private bool wasInRange = false;
+    private bool inRange = false;
+    private GameObject spawnedUI; // Keeps track of the prefab we spawn
 
     private void Start()
     {
         playerController = FindObjectOfType<PlayerController>();
-        
-        // Ensure UI is hidden at start
-        if (interactUI != null)
-        {
-            interactUI.SetActive(false);
-        }
     }
 
     void Update()
@@ -33,26 +29,13 @@ public class Key : MonoBehaviour
         // Visual float effect and spin
         transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime, Space.World);
 
-        if (playerController == null) return;
-
-        // Check 2m radius
-        float distance = Vector3.Distance(transform.position, playerController.transform.position);
-        bool inRange = distance <= pickupRadius;
-        
-        // Toggle the UI based ONLY on enter/exit transitions to prevent multiple objects fighting over the same UI
-        if (interactUI != null)
+        // Make the UI hover above the key manually so it doesn't inherit the spinning rotation or weird scales
+        if (spawnedUI != null)
         {
-            if (inRange && !wasInRange)
-            {
-                interactUI.SetActive(true);
-                wasInRange = true;
-            }
-            else if (!inRange && wasInRange)
-            {
-                interactUI.SetActive(false);
-                wasInRange = false;
-            }
+            spawnedUI.transform.position = transform.position + Vector3.up * uiSpawnHeight;
         }
+
+        if (playerController == null) return;
 
         // Wait for player to press 'E' or Left Click while in range
         if (inRange && (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0)))
@@ -67,12 +50,42 @@ public class Key : MonoBehaviour
             playerController.hasStolenSomething = true; 
             
             // Clean up the UI before the key destroys itself
-            if (interactUI != null)
+            if (spawnedUI != null)
             {
-                interactUI.SetActive(false);
+                Destroy(spawnedUI);
             }
             
             Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<PlayerController>() != null)
+        {
+            inRange = true;
+            
+            // Spawn the UI Prefab above the key if we haven't already
+            if (interactUIPrefab != null && spawnedUI == null)
+            {
+                Vector3 spawnPos = transform.position + Vector3.up * uiSpawnHeight;
+                // Instantiate WITHOUT making it a child, so it ignores the Key's rotation
+                spawnedUI = Instantiate(interactUIPrefab, spawnPos, Quaternion.identity);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<PlayerController>() != null)
+        {
+            inRange = false;
+            
+            // Destroy the UI when walking away
+            if (spawnedUI != null)
+            {
+                Destroy(spawnedUI);
+            }
         }
     }
 }
