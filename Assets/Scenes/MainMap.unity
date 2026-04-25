@@ -2617,6 +2617,7 @@ MonoBehaviour:
   walkSound: {fileID: 8300000, guid: 54d2f6c7107fede4b908f56e989689b6, type: 3}
   runSound: {fileID: 8300000, guid: a39692bcd806348458c5eb5080a358f1, type: 3}
   guardAnimator: {fileID: 0}
+  stateIndicator: {fileID: 0}
   investigateLingerTime: 4
   wanderDuration: {x: 5, y: 10}
   stillDuration: {x: 5, y: 15}
@@ -5530,6 +5531,7 @@ MonoBehaviour:
   walkSound: {fileID: 8300000, guid: 54d2f6c7107fede4b908f56e989689b6, type: 3}
   runSound: {fileID: 8300000, guid: a39692bcd806348458c5eb5080a358f1, type: 3}
   guardAnimator: {fileID: 0}
+  stateIndicator: {fileID: 0}
   investigateLingerTime: 4
   wanderDuration: {x: 5, y: 10}
   stillDuration: {x: 5, y: 15}
@@ -15243,6 +15245,7 @@ MonoBehaviour:
   walkSound: {fileID: 8300000, guid: 54d2f6c7107fede4b908f56e989689b6, type: 3}
   runSound: {fileID: 8300000, guid: a39692bcd806348458c5eb5080a358f1, type: 3}
   guardAnimator: {fileID: 0}
+  stateIndicator: {fileID: 0}
   investigateLingerTime: 4
   wanderDuration: {x: 5, y: 10}
   stillDuration: {x: 5, y: 15}
@@ -22745,7 +22748,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1493814943}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -27219,6 +27222,7 @@ MonoBehaviour:
   walkSound: {fileID: 8300000, guid: 54d2f6c7107fede4b908f56e989689b6, type: 3}
   runSound: {fileID: 8300000, guid: a39692bcd806348458c5eb5080a358f1, type: 3}
   guardAnimator: {fileID: 0}
+  stateIndicator: {fileID: 0}
   investigateLingerTime: 4
   wanderDuration: {x: 5, y: 10}
   stillDuration: {x: 5, y: 15}

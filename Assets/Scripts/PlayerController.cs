@@ -332,6 +332,15 @@ public class PlayerController : MonoBehaviour
             {
                 // isWalking in code actually means the fast speed (Run), and default is sneak (Walk)
                 speedPercent = isWalking ? 1f : 0.5f; 
+
+                // Rotate the character mesh to face the movement direction
+                Vector3 inputDirection = new Vector3(moveX, 0f, moveZ).normalized;
+                if (inputDirection.sqrMagnitude > 0.01f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(inputDirection);
+                    // Smoothly rotate the mesh towards the input direction
+                    characterAnimator.transform.localRotation = Quaternion.Slerp(characterAnimator.transform.localRotation, targetRotation, 15f * Time.deltaTime);
+                }
             }
             
             // Smoothly blend the Speed parameter
