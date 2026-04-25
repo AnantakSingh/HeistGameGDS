@@ -383,39 +383,44 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // If the guard enters the trigger radius configured on the child colliders
-        if (other.CompareTag("Guard"))
+        if (other.CompareTag("Guard") || other.CompareTag("Laser"))
         {
-            Debug.Log("Game Over! The player was caught by a guard.");
-            
-            if (gameOverSound != null)
-            {
-                AudioSource.PlayClipAtPoint(gameOverSound, cameraTarget != null ? cameraTarget.position : transform.position);
-            }
-            
-            // Enable Game Over UI right before pausing time
-            if (gameOverUI != null)
-            {
-                gameOverUI.SetActive(true);
-            }
-            
-            // Enable the play again button
-            if (playAgainButton != null)
-            {
-                playAgainButton.SetActive(true);
-            }
-            
-            // Enable the background panel
-            if (endBackgroundObject != null)
-            {
-                endBackgroundObject.SetActive(true);
-            }
-            
-            // Unlock mouse so they can click the button
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            
-            Time.timeScale = 0f; // Pauses all time-based movement, animations, and physics
+            TriggerGameOver();
         }
+    }
+
+    public void TriggerGameOver()
+    {
+        Debug.Log("Game Over!");
+        
+        if (gameOverSound != null)
+        {
+            AudioSource.PlayClipAtPoint(gameOverSound, cameraTarget != null ? cameraTarget.position : transform.position);
+        }
+        
+        // Enable Game Over UI right before pausing time
+        if (gameOverUI != null)
+        {
+            gameOverUI.SetActive(true);
+        }
+        
+        // Enable the play again button
+        if (playAgainButton != null)
+        {
+            playAgainButton.SetActive(true);
+        }
+        
+        // Enable the background panel
+        if (endBackgroundObject != null)
+        {
+            endBackgroundObject.SetActive(true);
+        }
+        
+        // Unlock mouse so they can click the button
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        Time.timeScale = 0f; // Pauses all time-based movement, animations, and physics
     }
 
     public void RestartGame()

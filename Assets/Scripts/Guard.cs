@@ -219,7 +219,7 @@ public class Guard : MonoBehaviour
                 // Check physical distance purely for catching/game over
                 if (Vector3.Distance(transform.position, playerTransform.position) <= catchDistance)
                 {
-                    Debug.Log("Player Caught by Guard!");
+                    playerController.TriggerGameOver();
                 }
                 break;
         }

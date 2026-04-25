@@ -26,7 +26,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _DarkenFactor: 0.5
-    - _DepthThreshold: 1.2
+    - _DepthThreshold: 3
     - _DistanceFadeEnd: 20
     - _DistanceFadeStart: 2
     - _NormalThreshold: 1.6

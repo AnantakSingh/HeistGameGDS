@@ -74,7 +74,7 @@ MonoBehaviour:
     renderPassEvent: 550
     darkenFactor: 0.5
     thickness: 2
-    depthThreshold: 1.2
+    depthThreshold: 3
     normalThreshold: 1.6
     distanceFadeStart: 2
     distanceFadeEnd: 20
