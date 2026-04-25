@@ -71,6 +71,10 @@ public class PlayerController : MonoBehaviour
     private UnityEngine.UI.Image alarmImage;
     private CanvasGroup alarmCanvasGroup;
 
+    [Header("Camera Overlay UI")]
+    [Tooltip("Drag the 2D UI image element to display when in view of a security camera here")]
+    public GameObject cameraOverlayUI;
+
     public void AddScore(int amount)
     {
         score += amount;
@@ -85,6 +89,7 @@ public class PlayerController : MonoBehaviour
     private float verticalLookRotation = 0f;
     private bool isSneaking = false;
     private Guard[] allGuards; // Cache all guards in the scene
+    private SecurityCamera[] allCameras; // Cache all security cameras in the scene
 
     // To remember the camera's original designated offset
     private Vector3 defaultCameraLocalPos;
@@ -93,6 +98,7 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         allGuards = FindObjectsOfType<Guard>(); // Find all guards once
+        allCameras = FindObjectsOfType<SecurityCamera>(); // Find all cameras once
         
         if (alarmScreenElement != null)
         {
@@ -140,6 +146,27 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleInventoryUI();
         HandleAlarmUI();
+        HandleCameraOverlayUI();
+    }
+
+    void HandleCameraOverlayUI()
+    {
+        if (cameraOverlayUI == null) return;
+
+        bool isInView = false;
+        foreach (SecurityCamera cam in allCameras)
+        {
+            if (cam != null && cam.IsPlayerInView)
+            {
+                isInView = true;
+                break;
+            }
+        }
+
+        if (cameraOverlayUI.activeSelf != isInView)
+        {
+            cameraOverlayUI.SetActive(isInView);
+        }
     }
 
     void HandleAlarmUI()
@@ -253,12 +280,6 @@ public class PlayerController : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(jumpSound, transform.position);
             }
-        }
-
-        // Variable Jump: Stop gaining height if the player lets go of Spacebar early
-        if (Input.GetButtonUp("Jump") && velocity.y > 0)
-        {
-            velocity.y = 0f; // Kill upward momentum to start falling immediately
         }
 
         // 3. Handle Horizontal Input

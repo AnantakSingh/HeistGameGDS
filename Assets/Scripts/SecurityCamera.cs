@@ -55,6 +55,7 @@ public class SecurityCamera : MonoBehaviour
     // ── Runtime state ──────────────────────────────────────────────────────────
     private Transform playerTransform;
     private bool isPlayerInView = false;
+    public bool IsPlayerInView { get { return isPlayerInView; } }
 
     // Track the score at the time of the last alert so we detect each NEW steal separately.
     // Starts at -1 so the first steal (score goes from 0 → positive) always triggers.
@@ -129,9 +130,17 @@ public class SecurityCamera : MonoBehaviour
         Vector3 direction = (targetPos - eyePos).normalized;
         float   dist      = Vector3.Distance(eyePos, targetPos);
 
-        if (Physics.Raycast(eyePos, direction, dist, obstructionMask))
+        if (Physics.Raycast(eyePos, direction, out RaycastHit hit, dist, obstructionMask))
         {
-            if (showDebugLogs) Debug.Log($"[SecurityCamera] '{name}' FAIL: line-of-sight blocked.");
+            // If the ray hits the player (or part of the player), we can see them! 
+            // This prevents flickering if the player layer is accidentally included in the obstruction mask.
+            if (hit.collider.transform.root == playerTransform.root || hit.collider.GetComponentInParent<PlayerController>() != null)
+            {
+                if (showDebugLogs) Debug.Log($"[SecurityCamera] '{name}' Player IN VIEW (Hit player directly).");
+                return true;
+            }
+
+            if (showDebugLogs) Debug.Log($"[SecurityCamera] '{name}' FAIL: line-of-sight blocked by {hit.collider.name}");
             return false;
         }
 
