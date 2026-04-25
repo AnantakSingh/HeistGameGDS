@@ -30,6 +30,10 @@ public class Guard : MonoBehaviour
     [Tooltip("Drag the child GameObject with the Animator here")]
     public Animator guardAnimator;
 
+    [Header("UI Indicators")]
+    [Tooltip("Drag the Sphere MeshRenderer here to indicate guard state.")]
+    public MeshRenderer stateIndicator;
+
     private NavMeshAgent agent;
     private Transform playerTransform;
     private PlayerController playerController;
@@ -262,6 +266,24 @@ public class Guard : MonoBehaviour
             
             // Smoothly blend the speed parameter
             guardAnimator.SetFloat("Speed", targetSpeed, 0.1f, Time.deltaTime);
+        }
+
+        // --- State Indicator Logic ---
+        if (stateIndicator != null)
+        {
+            if (currentState == State.Chase)
+            {
+                stateIndicator.material.color = Color.red;
+            }
+            else if (currentState == State.Investigate || visionGraceTimer > 0f)
+            {
+                // Yellow if investigating a camera alert, or if the player is in vision and we are getting suspicious
+                stateIndicator.material.color = Color.yellow;
+            }
+            else
+            {
+                stateIndicator.material.color = Color.green;
+            }
         }
     }
 
