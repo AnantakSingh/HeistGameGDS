@@ -24,6 +24,12 @@ public class Guard : MonoBehaviour
     [Header("Detection Details")]
     [Tooltip("The angle of the guard's vision cone.")]
     public float fovAngle = 110f;
+
+    [Tooltip("How far the guard can see (used for FOV raycast).")]
+    public float viewDistance = 20f;
+
+    [Tooltip("How close the player must be to be heard while running.")]
+    public float hearingDistance = 8f;
     
     [Tooltip("Layers that block the guard's vision (walls, etc).")]
     public LayerMask obstructionMask;
@@ -118,11 +124,11 @@ public class Guard : MonoBehaviour
                 bool isDoingSomethingSuspicious = playerController.hasStolenSomething || isRunning;
                 bool permanentLookout = SecurityCamera.CameraAlertTriggered;
 
-                // New Logic: 
                 // 1. Can we SEE the player? (FOV + Raycast)
-                // 2. Can we HEAR the player? (Proximity + Running)
+                // 2. Can we HEAR the player? (Close proximity + Running)
                 bool canSee = CanSeePlayer();
-                bool canHear = isPlayerInVision && isRunning;
+                float distToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+                bool canHear = isRunning && distToPlayer <= hearingDistance;
 
                 if ((canSee && (isDoingSomethingSuspicious || permanentLookout)) || canHear)
                 {
@@ -197,7 +203,8 @@ public class Guard : MonoBehaviour
                 // If the player is seen or heard while investigating, give them the grace period to hide
                 bool isRunningInv = playerController.GetComponent<CharacterController>().velocity.magnitude > 5f;
                 bool canSeeInv = CanSeePlayer();
-                bool canHearInv = isPlayerInVision && isRunningInv;
+                float distToPlayerInv = Vector3.Distance(transform.position, playerTransform.position);
+                bool canHearInv = isRunningInv && distToPlayerInv <= hearingDistance;
 
                 if (canSeeInv || canHearInv)
                 {
@@ -223,7 +230,9 @@ public class Guard : MonoBehaviour
                 // Track chase persistence
                 // Guard stays in chase as long as they can see/hear the player, or during the linger period
                 bool isRunningChase = playerController.GetComponent<CharacterController>().velocity.magnitude > 5f;
-                if (CanSeePlayer() || (isPlayerInVision && isRunningChase))
+                float distToPlayerChase = Vector3.Distance(transform.position, playerTransform.position);
+                bool canHearChase = isRunningChase && distToPlayerChase <= hearingDistance;
+                if (CanSeePlayer() || canHearChase)
                 {
                     // Keep the timer fully replenished
                     chaseTimer = chaseLingerTime;
@@ -331,21 +340,21 @@ public class Guard : MonoBehaviour
 
     private bool CanSeePlayer()
     {
-        if (!isPlayerInVision || playerTransform == null) return false;
+        if (playerTransform == null) return false;
 
-        // 1. Angle Check (FOV)
-        // Check from guard eye level to player center level
         Vector3 eyePos = transform.position + Vector3.up * eyeHeight;
-        Vector3 targetCenter = playerTransform.position + Vector3.up * 1.0f; 
-        Vector3 toPlayer = (targetCenter - eyePos).normalized;
-        
-        float angle = Vector3.Angle(transform.forward, toPlayer);
+        Vector3 targetCenter = playerTransform.position + Vector3.up * 1.0f;
 
+        // 1. Distance Check
+        float dist = Vector3.Distance(eyePos, targetCenter);
+        if (dist > viewDistance) return false;
+
+        // 2. Angle Check (FOV)
+        Vector3 toPlayer = (targetCenter - eyePos).normalized;
+        float angle = Vector3.Angle(transform.forward, toPlayer);
         if (angle > fovAngle * 0.5f) return false;
 
-        // 2. Line of Sight Check (Raycast)
-        float dist = Vector3.Distance(eyePos, targetCenter);
-
+        // 3. Line of Sight Check (Raycast)
         if (Physics.Raycast(eyePos, toPlayer, out RaycastHit hit, dist, obstructionMask))
         {
             // If the ray hits something that isn't the player, vision is blocked
