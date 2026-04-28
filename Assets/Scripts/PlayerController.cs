@@ -178,7 +178,7 @@ public class PlayerController : MonoBehaviour
         // Check if any guard is chasing and within 12 units
         foreach (Guard guard in allGuards)
         {
-            if (guard != null && guard.IsChasing && Vector3.Distance(transform.position, guard.transform.position) <= 12f)
+            if (guard != null && guard.IsAlerted && Vector3.Distance(transform.position, guard.transform.position) <= 12f)
             {
                 isGuardClose = true;
                 break;
@@ -382,10 +382,21 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // If the guard enters the trigger radius configured on the child colliders
-        if (other.CompareTag("Guard") || other.CompareTag("Laser"))
+        // Lasers always trigger game over
+        if (other.CompareTag("Laser"))
         {
             TriggerGameOver();
+            return;
+        }
+
+        // Guards only trigger game over if they are Alerted or Chasing (Indicator is Yellow or Red)
+        if (other.CompareTag("Guard"))
+        {
+            Guard guard = other.GetComponentInParent<Guard>();
+            if (guard != null && guard.IsAlerted)
+            {
+                TriggerGameOver();
+            }
         }
     }
 

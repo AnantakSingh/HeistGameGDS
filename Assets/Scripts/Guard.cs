@@ -18,8 +18,18 @@ public class Guard : MonoBehaviour
 
     [Tooltip("How long the player must stay inside the vision collider before the guard enters chase mode. " +
              "Gives the player a window to duck out of sight.")]
-    public float chaseGraceTime = 1f;
+    public float chaseGraceTime = 0.5f;
     private float visionGraceTimer = 0f;  // counts UP while player is continuously in vision
+
+    [Header("Detection Details")]
+    [Tooltip("The angle of the guard's vision cone.")]
+    public float fovAngle = 110f;
+    
+    [Tooltip("Layers that block the guard's vision (walls, etc).")]
+    public LayerMask obstructionMask;
+
+    [Tooltip("The height from the guard's feet to their eyes for raycasting.")]
+    public float eyeHeight = 1.5f;
 
     [Header("Audio")]
     public AudioSource movementAudioSource;
@@ -61,6 +71,11 @@ public class Guard : MonoBehaviour
     
     public bool IsChasing { get { return currentState == State.Chase; } }
     
+    /// <summary>
+    /// Returns true if the guard is currently investigating or chasing (Yellow or Red states).
+    /// </summary>
+    public bool IsAlerted { get { return currentState != State.Roam || visionGraceTimer > 0f; } }
+
     // Tracks if player is currently inside the vision trigger box
     private bool isPlayerInVision = false;
 
@@ -99,12 +114,19 @@ public class Guard : MonoBehaviour
                     playerSpeed = flatVelocity.magnitude;
                 }
 
-                bool isDoingSomethingSuspicious = playerController.hasStolenSomething || playerSpeed > 5f;
+                bool isRunning = playerSpeed > 5f;
+                bool isDoingSomethingSuspicious = playerController.hasStolenSomething || isRunning;
                 bool permanentLookout = SecurityCamera.CameraAlertTriggered;
 
-                if (isPlayerInVision && (isDoingSomethingSuspicious || permanentLookout))
+                // New Logic: 
+                // 1. Can we SEE the player? (FOV + Raycast)
+                // 2. Can we HEAR the player? (Proximity + Running)
+                bool canSee = CanSeePlayer();
+                bool canHear = isPlayerInVision && isRunning;
+
+                if ((canSee && (isDoingSomethingSuspicious || permanentLookout)) || canHear)
                 {
-                    // Count up while player stays in vision — only chase after the grace period
+                    // Count up while player stays in vision/hearing — only chase after the grace period
                     visionGraceTimer += Time.deltaTime;
                     if (visionGraceTimer >= chaseGraceTime)
                     {
@@ -118,7 +140,7 @@ public class Guard : MonoBehaviour
                 }
                 else
                 {
-                    // Player left vision or is no longer suspicious — reset the grace window
+                    // Player left vision/hearing or is no longer suspicious — reset the grace window
                     visionGraceTimer = 0f;
                 }
 
@@ -172,8 +194,12 @@ public class Guard : MonoBehaviour
                     }
                 }
 
-                // If the player walks into view while investigating, give them 1 second to duck out
-                if (isPlayerInVision)
+                // If the player is seen or heard while investigating, give them the grace period to hide
+                bool isRunningInv = playerController.GetComponent<CharacterController>().velocity.magnitude > 5f;
+                bool canSeeInv = CanSeePlayer();
+                bool canHearInv = isPlayerInVision && isRunningInv;
+
+                if (canSeeInv || canHearInv)
                 {
                     visionGraceTimer += Time.deltaTime;
                     if (visionGraceTimer >= chaseGraceTime)
@@ -194,10 +220,12 @@ public class Guard : MonoBehaviour
                 // Follow the player
                 agent.SetDestination(playerTransform.position);
                 
-                // Track chase persistence using vision box
-                if (isPlayerInVision)
+                // Track chase persistence
+                // Guard stays in chase as long as they can see/hear the player, or during the linger period
+                bool isRunningChase = playerController.GetComponent<CharacterController>().velocity.magnitude > 5f;
+                if (CanSeePlayer() || (isPlayerInVision && isRunningChase))
                 {
-                    // If player is still inside vision box, keep the timer fully replenished at 5s
+                    // Keep the timer fully replenished
                     chaseTimer = chaseLingerTime;
                 }
                 else
@@ -299,6 +327,35 @@ public class Guard : MonoBehaviour
         agent.speed = chaseSpeed; // Run to the scene of the crime
         agent.SetDestination(worldPosition);
         Debug.Log($"[Guard] '{name}' is investigating camera alert at {worldPosition}");
+    }
+
+    private bool CanSeePlayer()
+    {
+        if (!isPlayerInVision || playerTransform == null) return false;
+
+        // 1. Angle Check (FOV)
+        // Check from guard eye level to player center level
+        Vector3 eyePos = transform.position + Vector3.up * eyeHeight;
+        Vector3 targetCenter = playerTransform.position + Vector3.up * 1.0f; 
+        Vector3 toPlayer = (targetCenter - eyePos).normalized;
+        
+        float angle = Vector3.Angle(transform.forward, toPlayer);
+
+        if (angle > fovAngle * 0.5f) return false;
+
+        // 2. Line of Sight Check (Raycast)
+        float dist = Vector3.Distance(eyePos, targetCenter);
+
+        if (Physics.Raycast(eyePos, toPlayer, out RaycastHit hit, dist, obstructionMask))
+        {
+            // If the ray hits something that isn't the player, vision is blocked
+            if (hit.collider.transform.root != playerTransform.root && hit.collider.GetComponentInParent<PlayerController>() == null)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     void SetRandomDestination()

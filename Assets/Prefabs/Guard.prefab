@@ -111,8 +111,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 93.116806, y: 14.054415, z: 11.194526}
-  m_Center: {x: -0.03308058, y: -6.5272074, z: -1.2812327}
+  m_Size: {x: 110.247116, y: 14.054415, z: 14.28359}
+  m_Center: {x: 0.10732413, y: -6.5272074, z: -2.825751}
 --- !u!114 &1846682309731957339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,8 +248,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1.3995838, z: 0.76140213}
+  m_Center: {x: 0, y: 0.19979057, z: 0.034086227}
 --- !u!195 &3290370402200471973
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -290,6 +290,11 @@ MonoBehaviour:
   chaseSpeed: 5.8
   chaseLingerTime: 5
   chaseGraceTime: 1
+  fovAngle: 110
+  obstructionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  eyeHeight: 1.5
   movementAudioSource: {fileID: 0}
   walkSound: {fileID: 8300000, guid: 54d2f6c7107fede4b908f56e989689b6, type: 3}
   runSound: {fileID: 8300000, guid: a39692bcd806348458c5eb5080a358f1, type: 3}

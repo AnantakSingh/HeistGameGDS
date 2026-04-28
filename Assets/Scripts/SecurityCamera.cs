@@ -25,6 +25,9 @@ public class SecurityCamera : MonoBehaviour
     [Tooltip("Drag the specific Guards that should investigate when this camera fires.")]
     public Guard[] assignedGuards;
 
+    [Tooltip("The rotating part of the camera. If null, uses the GameObject this script is on.")]
+    public Transform cameraHead;
+
     [Header("Detection Settings")]
     [Tooltip("Full field of view in degrees. Camera faces its local +Z (blue arrow).")]
     public float fieldOfViewAngle = 100f;
@@ -89,18 +92,23 @@ public class SecurityCamera : MonoBehaviour
         SetVisualizationColor((isPlayerInView || alertPending) ? detectedColor : idleColor);
 
         // Trigger on every new steal that happens while the player is in view.
-        // We compare scores so each stolen item fires exactly once.
         if (isPlayerInView && playerController.score > lastAlertedScore && playerController.hasStolenSomething)
         {
-            lastAlertedScore = playerController.score;
             TriggerAlert();
         }
+
+        // IMPORTANT: Update this every frame so we only catch thefts that happen 
+        // WHILE the player is in the camera's view. Otherwise, stealing off-camera 
+        // and then walking into view would trigger a delayed alert.
+        lastAlertedScore = playerController.score;
     }
 
     // ── Detection ──────────────────────────────────────────────────────────────
     bool CheckPlayerInView()
     {
-        Vector3 toPlayer = playerTransform.position - transform.position;
+        // Use cameraHead if assigned, otherwise use this transform
+        Transform viewSource = (cameraHead != null) ? cameraHead : transform;
+        Vector3 toPlayer = playerTransform.position - viewSource.position;
 
         // 1. Height check
         if (Mathf.Abs(toPlayer.y) > viewHeight)
@@ -116,8 +124,8 @@ public class SecurityCamera : MonoBehaviour
             return false;
         }
 
-        // 3. Angle check
-        float angle = Vector3.Angle(transform.forward, toPlayer);
+        // 3. Angle check (using the actual forward vector of the viewSource)
+        float angle = Vector3.Angle(viewSource.forward, toPlayer);
         if (angle > fieldOfViewAngle * 0.5f)
         {
             if (showDebugLogs) Debug.Log($"[SecurityCamera] '{name}' FAIL: angle {angle:F1}° > halfFOV {fieldOfViewAngle * 0.5f}°");
@@ -125,7 +133,7 @@ public class SecurityCamera : MonoBehaviour
         }
 
         // 4. Line-of-sight raycast
-        Vector3 eyePos    = transform.position;
+        Vector3 eyePos    = viewSource.position;
         Vector3 targetPos = playerTransform.position + Vector3.up * 0.8f;
         Vector3 direction = (targetPos - eyePos).normalized;
         float   dist      = Vector3.Distance(eyePos, targetPos);
@@ -133,7 +141,6 @@ public class SecurityCamera : MonoBehaviour
         if (Physics.Raycast(eyePos, direction, out RaycastHit hit, dist, obstructionMask))
         {
             // If the ray hits the player (or part of the player), we can see them! 
-            // This prevents flickering if the player layer is accidentally included in the obstruction mask.
             if (hit.collider.transform.root == playerTransform.root || hit.collider.GetComponentInParent<PlayerController>() != null)
             {
                 if (showDebugLogs) Debug.Log($"[SecurityCamera] '{name}' Player IN VIEW (Hit player directly).");
@@ -236,7 +243,8 @@ public class SecurityCamera : MonoBehaviour
     LineRenderer MakeLineRenderer(string childName, bool loop)
     {
         GameObject obj = new GameObject(childName);
-        obj.transform.SetParent(transform, false); // false = keep local transform zeroed
+        Transform  parentTransform = (cameraHead != null) ? cameraHead : transform;
+        obj.transform.SetParent(parentTransform, false); // Attach to the rotating head
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
         obj.transform.localScale    = Vector3.one;
@@ -284,9 +292,10 @@ public class SecurityCamera : MonoBehaviour
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
+        Transform viewSource = (cameraHead != null) ? cameraHead : transform;
         float    halfFOV   = fieldOfViewAngle * 0.5f;
         Color    wireColor = isPlayerInView ? Color.red : Color.yellow;
-        Vector3  baseEdge  = Quaternion.AngleAxis(halfFOV, transform.right) * transform.forward;
+        Vector3  baseEdge  = Quaternion.AngleAxis(halfFOV, viewSource.right) * viewSource.forward;
 
         int       rimSegs  = 32;
         Vector3[] rimPts   = new Vector3[rimSegs];
@@ -295,23 +304,23 @@ public class SecurityCamera : MonoBehaviour
         for (int i = 0; i < rimSegs; i++)
         {
             float az      = 360f / rimSegs * i;
-            Vector3 dir   = Quaternion.AngleAxis(az, transform.forward) * baseEdge;
-            rimPts[i]     = transform.position + dir * viewDistance;
-            Gizmos.DrawLine(transform.position, rimPts[i]);
+            Vector3 dir   = Quaternion.AngleAxis(az, viewSource.forward) * baseEdge;
+            rimPts[i]     = viewSource.position + dir * viewDistance;
+            Gizmos.DrawLine(viewSource.position, rimPts[i]);
         }
         for (int i = 0; i < rimSegs; i++)
             Gizmos.DrawLine(rimPts[i], rimPts[(i + 1) % rimSegs]);
 
-        Gizmos.DrawRay(transform.position, (Quaternion.AngleAxis( halfFOV, transform.right) * transform.forward) * viewDistance);
-        Gizmos.DrawRay(transform.position, (Quaternion.AngleAxis(-halfFOV, transform.right) * transform.forward) * viewDistance);
-        Gizmos.DrawRay(transform.position, (Quaternion.AngleAxis( halfFOV, transform.up)    * transform.forward) * viewDistance);
-        Gizmos.DrawRay(transform.position, (Quaternion.AngleAxis(-halfFOV, transform.up)    * transform.forward) * viewDistance);
+        Gizmos.DrawRay(viewSource.position, (Quaternion.AngleAxis( halfFOV, viewSource.right) * viewSource.forward) * viewDistance);
+        Gizmos.DrawRay(viewSource.position, (Quaternion.AngleAxis(-halfFOV, viewSource.right) * viewSource.forward) * viewDistance);
+        Gizmos.DrawRay(viewSource.position, (Quaternion.AngleAxis( halfFOV, viewSource.up)    * viewSource.forward) * viewDistance);
+        Gizmos.DrawRay(viewSource.position, (Quaternion.AngleAxis(-halfFOV, viewSource.up)    * viewSource.forward) * viewDistance);
 
         Gizmos.color = Color.white;
-        Gizmos.DrawRay(transform.position, transform.forward * viewDistance);
+        Gizmos.DrawRay(viewSource.position, viewSource.forward * viewDistance);
 
         //Gizmos.color = hasAlerted ? Color.red : Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, 0.3f);
+        Gizmos.DrawWireSphere(viewSource.position, 0.3f);
     }
 #endif
 }
