@@ -3860,7 +3860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c95652397c8f25342a262f042665af8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Valuable
-  value: 100
+  value: 3200
   valuableSound: {fileID: 8300000, guid: b513c46f16474b74cbd1cd180f401e64, type: 3}
   interactUI: {fileID: 1973240385}
 --- !u!65 &193811687
@@ -25218,6 +25218,7 @@ MonoBehaviour:
   cameraOverlayUI: {fileID: 1347348234}
   cameraOverlayHoldDuration: 0.8
   timerText: {fileID: 1719910486}
+  isGameOver: 0
 --- !u!143 &1493814945
 CharacterController:
   m_ObjectHideFlags: 0

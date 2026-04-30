@@ -17,6 +17,12 @@ public class SecurityCamera : MonoBehaviour
     /// </summary>
     public static bool CameraAlertTriggered { get; private set; } = false;
 
+    private void Awake()
+    {
+        // Reset the static alert flag whenever a new scene is loaded
+        CameraAlertTriggered = false;
+    }
+
     // ── Inspector fields ───────────────────────────────────────────────────────
     [Header("References")]
     [Tooltip("Drag the Player's PlayerController component here.")]
