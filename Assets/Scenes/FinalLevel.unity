@@ -18736,7 +18736,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c95652397c8f25342a262f042665af8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Valuable
-  value: 100
+  value: 2300
   valuableSound: {fileID: 8300000, guid: b513c46f16474b74cbd1cd180f401e64, type: 3}
   interactUI: {fileID: 1973240385}
 --- !u!65 &1060108140
@@ -23311,6 +23311,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinimapExitTrigger
   exitMarker: {fileID: 2009492686}
+  notificationText: {fileID: 0}
+  notificationDuration: 2
 --- !u!65 &1447730902
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24385,6 +24387,8 @@ MonoBehaviour:
   gameOverUI: {fileID: 784352354}
   gameFinishUI: {fileID: 774567249}
   playAgainButton: {fileID: 274960473}
+  playNextLevelButton: {fileID: 0}
+  nextLevelIndex: 1
   endBackgroundObject: {fileID: 114644110}
   jumpBoostText: {fileID: 181396673}
   speedBoostText: {fileID: 1564699090}
@@ -32787,6 +32791,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinimapExitTrigger
   exitMarker: {fileID: 459250180}
+  notificationText: {fileID: 0}
+  notificationDuration: 2
 --- !u!65 &1876278543
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -37399,6 +37405,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinimapExitTrigger
   exitMarker: {fileID: 1297368135}
+  notificationText: {fileID: 0}
+  notificationDuration: 2
 --- !u!65 &2074985831
 BoxCollider:
   m_ObjectHideFlags: 0

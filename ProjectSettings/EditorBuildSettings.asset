@@ -9,8 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/StartScreen.unity
     guid: 3d3d741f19f087e4e98effa3906f3368
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/FirstLevel.unity
+    guid: 17882ff0180e4d342a666f3c413556cd
+  - enabled: 1
+    path: Assets/Scenes/FirstLevelCopy1.unity
+    guid: efc83b0c32c5ee3459c24f38a1ded474
+  - enabled: 1
+    path: Assets/Scenes/FirstLevelCopy2.unity
+    guid: 457a1eaa9c30cd7459906c3ba0773d41
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -96,8 +96,8 @@ public class ExitZone : MonoBehaviour
         if (player.gameFinishUI != null)
             player.gameFinishUI.SetActive(true);
 
-        if (player.playAgainButton != null)
-            player.playAgainButton.SetActive(true);
+        if (player.playNextLevelButton != null)
+            player.playNextLevelButton.SetActive(true);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible   = true;

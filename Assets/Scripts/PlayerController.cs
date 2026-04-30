@@ -40,8 +40,14 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Drag your Game Finish (Victory) TextMeshPro or UI Canvas object here")]
     public GameObject gameFinishUI;
     
-    [Tooltip("Drag your Play Again UI Button object here")]
+    [Tooltip("Drag your Play Again UI Button object here (shown on Game Over).")]
     public GameObject playAgainButton;
+
+    [Tooltip("Drag your Play Next Level UI Button object here (shown on Win).")]
+    public GameObject playNextLevelButton;
+
+    [Tooltip("Build index of the next level scene to load when the player wins.")]
+    public int nextLevelIndex = 1;
     
     [Tooltip("Drag an optional object here to enable when the game ends (e.g. background panel)")]
     public GameObject endBackgroundObject;
@@ -191,49 +197,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void HandleAlarmUI()
-    {
-        if (alarmScreenElement == null) return;
 
-        bool isGuardClose = false;
-        
-        // Check if any guard is chasing and within 12 units
-        foreach (Guard guard in allGuards)
-        {
-            if (guard != null && guard.IsAlerted && Vector3.Distance(transform.position, guard.transform.position) <= 12f)
-            {
-                isGuardClose = true;
-                break;
-            }
-        }
-
-        if (isGuardClose)
-        {
-            alarmScreenElement.SetActive(true);
-            
-            // Calculate a pulsing value between 0.2 and 0.8 using sine wave
-            float pulse = 0.5f + Mathf.Sin(Time.time * alarmFlashSpeed) * 0.3f;
-            
-            if (alarmCanvasGroup != null)
-            {
-                alarmCanvasGroup.alpha = pulse;
-            }
-            else if (alarmImage != null)
-            {
-                Color c = alarmImage.color;
-                c.a = pulse;
-                alarmImage.color = c;
-            }
-        }
-        else
-        {
-            // Reset and hide when safe
-            if (alarmScreenElement.activeSelf)
-            {
-                alarmScreenElement.SetActive(false);
-            }
-        }
-    }
 
     void HandleAlarmUI()
     {
@@ -512,9 +476,14 @@ public class PlayerController : MonoBehaviour
 
     public void RestartGame()
     {
-        // Unfreeze time before loading, otherwise the new scene starts instantly frozen
         Time.timeScale = 1f;
-        SceneManager.LoadScene(0); // Load StartScene (index 0)
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reload current level
+    }
+
+    public void LoadNextLevel()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(nextLevelIndex);
     }
 
     public void BoostWalkSpeed(float amount)
