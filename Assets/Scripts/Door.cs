@@ -1,116 +1,198 @@
 using UnityEngine;
+using TMPro;
 
+/// <summary>
+/// Attach this script to the root Door GameObject.
+///
+/// Setup:
+///  1. Add a child empty GameObject (e.g. "DoorZone") with a Trigger Collider
+///     sized to cover the area where you want the door to react.
+///  2. Add the <see cref="DoorTriggerZone"/> script to that child.
+///  3. Assign a world-space or screen-space UI prompt object to <see cref="promptUI"/>.
+///     Optionally assign its TextMeshPro child to <see cref="promptText"/> to get
+///     dynamic messages ("Press E to open" / "This door requires a key").
+///  4. Player tag = "Player", Guard tag = "Guard".
+/// </summary>
 public class Door : MonoBehaviour
 {
     [Header("Door Settings")]
     [Tooltip("If true, the player needs at least 1 key to open this door.")]
     public bool requiresKey = false;
-    
-    [Tooltip("Distance at which the door opens when the player comes close.")]
-    public float openRange = 2f;
-    
-    [Tooltip("How far down the door goes when opened.")]
+
+    [Tooltip("How far down the door slides when opened.")]
     public float openDepth = 3f;
-    
-    [Tooltip("Speed of the door opening/closing.")]
-    public float lerpSpeed = 5f;
+
+    [Tooltip("Speed of the door opening / closing lerp.")]
+    public float lerpSpeed = 8f;
+
+    [Tooltip("Seconds after the trigger zone empties before the door starts closing.")]
+    public float closeDelay = 1f;
+
+    [Tooltip("Key the player must press to open the door.")]
+    public KeyCode interactKey = KeyCode.E;
+
+    [Header("UI Prompt")]
+    [Tooltip("Drag the screen-space TextMeshProUGUI element here. It will be shown/hidden automatically.")]
+    public TextMeshProUGUI promptText;
 
     [Header("Audio")]
     public AudioClip openSound;
     public AudioClip lockedSound;
-    
-    // Simple cooldown variable so it doesn't spam the locked sound every frame the player stands there
-    private float soundCooldown = 0f;
 
+    // ── Runtime ───────────────────────────────────────────────────────────────
     private Vector3 closedPosition;
     private Vector3 openPosition;
-    private bool isOpen = false;
-    private Transform playerTransform;
+
+    private bool  isOpen    = false;
+    private bool  isMoving  = false;
+    private float closeTimer = 0f;
+
+    private int playerCount = 0;
+    private int guardCount  = 0;
+
+    private float soundCooldown = 0f;
     private PlayerController playerController;
 
+    // ── Unity Messages ────────────────────────────────────────────────────────
     void Start()
     {
-        closedPosition = transform.position;
-        openPosition = closedPosition + Vector3.down * openDepth;
-        
+        closedPosition   = transform.position;
+        openPosition     = closedPosition + Vector3.down * openDepth;
         playerController = FindObjectOfType<PlayerController>();
-        if (playerController != null)
-        {
-            playerTransform = playerController.transform;
-        }
-        else
-        {
-            Debug.LogWarning("PlayerController not found in the scene! Door won't be able to detect the player.");
-        }
+
+        if (playerController == null)
+            Debug.LogWarning("[Door] PlayerController not found in scene.");
+
+        if (promptUI != null) promptUI.SetActive(false);
     }
 
     void Update()
     {
-        bool anyEntityNear = false;
-
-        // Reduce cooldown timer
         if (soundCooldown > 0f) soundCooldown -= Time.deltaTime;
 
-        // 1. Check player distance
-        if (playerTransform != null && Vector3.Distance(closedPosition, playerTransform.position) <= openRange)
+        bool playerInZone = playerCount > 0;
+        bool guardInZone  = guardCount  > 0;
+        bool anyInZone    = playerInZone || guardInZone;
+
+        // ── Player interaction ────────────────────────────────────────────
+        if (playerInZone && !isOpen)
         {
-            // If it's locked, try to unlock
-            if (requiresKey)
+            UpdatePrompt();
+
+            if (Input.GetKeyDown(interactKey))
             {
-                if (playerController != null && playerController.keyCount > 0)
+                if (requiresKey)
                 {
-                    playerController.keyCount--;
-                    requiresKey = false;
+                    if (playerController != null && playerController.keyCount > 0)
+                    {
+                        // Consume one key and unlock
+                        playerController.keyCount--;
+                        requiresKey = false;
+                        OpenDoor();
+                    }
+                    else
+                    {
+                        // Locked — audio feedback
+                        if (soundCooldown <= 0f && lockedSound != null)
+                        {
+                            AudioSource.PlayClipAtPoint(lockedSound, transform.position);
+                            soundCooldown = 2f;
+                        }
+                    }
                 }
                 else
                 {
-                    // The player does not have a key and it is locked
-                    if (soundCooldown <= 0f && lockedSound != null)
-                    {
-                        AudioSource.PlayClipAtPoint(lockedSound, transform.position);
-                        soundCooldown = 2f; // Wait 2 seconds before playing the locked sound again
-                    }
-                }
-            }
-            
-            // If it's unlocked, player can open it
-            if (!requiresKey)
-            {
-                anyEntityNear = true;
-            }
-        }
-
-        // 2. Check for guards using OverlapSphere if player hasn't already triggered it
-        if (!anyEntityNear)
-        {
-            Collider[] colliders = Physics.OverlapSphere(closedPosition, openRange);
-            foreach (Collider col in colliders)
-            {
-                if (col.CompareTag("Guard"))
-                {
-                    Guard guardScript = col.GetComponent<Guard>();
-                    
-                    // Allow the guard to open if the door is already unlocked, OR if the guard is chasing the player
-                    if (!requiresKey || (guardScript != null && guardScript.IsChasing))
-                    {
-                        anyEntityNear = true;
-                        requiresKey = false; // Guards bypass locks and permanently unlock the door
-                        break;
-                    }
+                    OpenDoor();
                 }
             }
         }
-        
-        // Only trigger open sound when it transitions from closed to open
-        if (!isOpen && anyEntityNear)
+
+        // ── Guards auto-open (no key press needed) ────────────────────────
+        if (guardInZone && !isOpen)
         {
-            if (openSound != null) AudioSource.PlayClipAtPoint(openSound, transform.position);
+            requiresKey = false; // Guards bypass and permanently unlock
+            OpenDoor();
         }
 
-        isOpen = anyEntityNear;
+        // ── Hide prompt when door is open or player leaves ────────────────
+        if (promptText != null && (!playerInZone || isOpen))
+            promptText.gameObject.SetActive(false);
 
-        // Apply Lerp movement
-        Vector3 targetPosition = isOpen ? openPosition : closedPosition;
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * lerpSpeed);
+        // ── Close delay ───────────────────────────────────────────────────
+        if (!anyInZone && isOpen)
+        {
+            closeTimer -= Time.deltaTime;
+            if (closeTimer <= 0f)
+                CloseDoor();
+        }
+        else if (anyInZone)
+        {
+            closeTimer = closeDelay;
+        }
+
+        // ── Lerp to target ────────────────────────────────────────────────
+        if (isMoving)
+        {
+            Vector3 target     = isOpen ? openPosition : closedPosition;
+            transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime * lerpSpeed);
+
+            if (Vector3.Distance(transform.position, target) < 0.005f)
+            {
+                transform.position = target;
+                isMoving = false;
+            }
+        }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    void OpenDoor()
+    {
+        if (isOpen) return;
+        isOpen     = true;
+        isMoving   = true;
+        closeTimer = closeDelay;
+
+        if (promptText != null) promptText.gameObject.SetActive(false);
+        if (openSound != null) AudioSource.PlayClipAtPoint(openSound, transform.position);
+    }
+
+    void CloseDoor()
+    {
+        if (!isOpen) return;
+        isOpen   = false;
+        isMoving = true;
+    }
+
+    void UpdatePrompt()
+    {
+        if (promptText == null) return;
+
+        bool playerHasKey = playerController != null && playerController.keyCount > 0;
+        promptText.text = (requiresKey && !playerHasKey)
+            ? "This door requires a key"
+            : "Press E to open";
+
+        promptText.gameObject.SetActive(true);
+    }
+
+    // ── Called by DoorTriggerZone ─────────────────────────────────────────────
+    public void EntityEntered(Collider other)
+    {
+        if (other.CompareTag("Player"))     playerCount++;
+        else if (other.CompareTag("Guard")) guardCount++;
+    }
+
+    public void EntityExited(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerCount = Mathf.Max(0, playerCount - 1);
+            if (playerCount == 0 && promptText != null)
+                promptText.gameObject.SetActive(false);
+        }
+        else if (other.CompareTag("Guard"))
+        {
+            guardCount = Mathf.Max(0, guardCount - 1);
+        }
     }
 }

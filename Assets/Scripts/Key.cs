@@ -42,9 +42,8 @@ public class Key : MonoBehaviour
         {
             if (keySound != null) AudioSource.PlayClipAtPoint(keySound, transform.position);
             
-            // Add key to inventory and score
+            // Add key to inventory (keys are used for doors, not score)
             playerController.keyCount++;
-            playerController.AddScore(10);
             
             // Trigger the global stolen state so guards will attack
             playerController.hasStolenSomething = true; 

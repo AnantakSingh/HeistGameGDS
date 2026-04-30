@@ -61,6 +61,11 @@ public class Guard : MonoBehaviour
     [Header("Camera Alert Settings")]
     [Tooltip("How long the guard pauses at the investigate point before returning to roam.")]
     public float investigateLingerTime = 4f;
+
+    [Tooltip("Each guard picks a random point within this radius of the steal location, " +
+             "so they spread out instead of piling on the exact same spot.")]
+    public float investigateSpreadRadius = 2.5f;
+
     private float investigateTimer = 0f;
     private Vector3 investigateTarget;
 
@@ -330,12 +335,23 @@ public class Guard : MonoBehaviour
     /// </summary>
     public void InvestigatePoint(Vector3 worldPosition)
     {
-        investigateTarget = worldPosition;
-        investigateTimer = investigateLingerTime;
-        currentState = State.Investigate;
-        agent.speed = chaseSpeed; // Run to the scene of the crime
-        agent.SetDestination(worldPosition);
-        Debug.Log($"[Guard] '{name}' is investigating camera alert at {worldPosition}");
+        // Pick a random offset so guards spread out and don't pile on top of each other.
+        Vector3 destination = worldPosition;
+        Vector3 randomOffset = Random.insideUnitSphere * investigateSpreadRadius;
+        randomOffset.y = 0f;
+        Vector3 candidate = worldPosition + randomOffset;
+
+        NavMeshHit navHit;
+        if (NavMesh.SamplePosition(candidate, out navHit, investigateSpreadRadius + 1f, NavMesh.AllAreas))
+            destination = navHit.position;
+
+        investigateTarget = destination;
+        investigateTimer  = investigateLingerTime;
+        currentState      = State.Investigate;
+        agent.speed       = chaseSpeed; // Run to the scene of the crime
+        agent.isStopped   = false;
+        agent.SetDestination(destination);
+        Debug.Log($"[Guard] '{name}' investigating camera alert near {worldPosition} (offset dest: {destination})");
     }
 
     private bool CanSeePlayer()

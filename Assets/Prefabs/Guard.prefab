@@ -287,10 +287,12 @@ MonoBehaviour:
   roamRadius: 6
   catchDistance: 1.5
   roamSpeed: 2.5
-  chaseSpeed: 5.8
+  chaseSpeed: 7
   chaseLingerTime: 5
   chaseGraceTime: 1
   fovAngle: 110
+  viewDistance: 20
+  hearingDistance: 8
   obstructionMask:
     serializedVersion: 2
     m_Bits: 0

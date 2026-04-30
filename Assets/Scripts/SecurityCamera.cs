@@ -97,10 +97,16 @@ public class SecurityCamera : MonoBehaviour
             TriggerAlert();
         }
 
-        // IMPORTANT: Update this every frame so we only catch thefts that happen 
-        // WHILE the player is in the camera's view. Otherwise, stealing off-camera 
-        // and then walking into view would trigger a delayed alert.
-        lastAlertedScore = playerController.score;
+        // Only sync the score baseline while the player IS in view.
+        // If we synced every frame, a steal that occurred one frame before/after
+        // the camera's Update would permanently collapse the score delta to zero,
+        // making the alert undetectable. By only advancing the baseline when the
+        // camera can actually see the player, we preserve the unseen delta until
+        // the player next appears in view.
+        if (isPlayerInView)
+        {
+            lastAlertedScore = playerController.score;
+        }
     }
 
     // ── Detection ──────────────────────────────────────────────────────────────

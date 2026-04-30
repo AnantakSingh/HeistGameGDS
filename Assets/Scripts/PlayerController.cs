@@ -75,6 +75,12 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Drag the 2D UI image element to display when in view of a security camera here")]
     public GameObject cameraOverlayUI;
 
+    [Tooltip("How long (seconds) the overlay stays visible after the player leaves camera view, to prevent flickering.")]
+    public float cameraOverlayHoldDuration = 0.2f;
+
+    // Tracks the earliest time at which the overlay is allowed to hide
+    private float _cameraOverlayHideTime = 0f;
+
     public void AddScore(int amount)
     {
         score += amount;
@@ -163,9 +169,17 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (cameraOverlayUI.activeSelf != isInView)
+        if (isInView)
         {
-            cameraOverlayUI.SetActive(isInView);
+            // Player is currently in view — extend the hold window and show the UI.
+            _cameraOverlayHideTime = Time.time + cameraOverlayHoldDuration;
+            if (!cameraOverlayUI.activeSelf)
+                cameraOverlayUI.SetActive(true);
+        }
+        else if (cameraOverlayUI.activeSelf && Time.time >= _cameraOverlayHideTime)
+        {
+            // Hold window has expired — safe to hide now.
+            cameraOverlayUI.SetActive(false);
         }
     }
 
