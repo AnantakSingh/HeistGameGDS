@@ -41,6 +41,10 @@ public class SecurityCamera : MonoBehaviour
     [Tooltip("Layers that block line of sight (walls, etc). Do NOT include the Player layer.")]
     public LayerMask obstructionMask;
 
+    [Header("Night Mode")]
+    [Tooltip("When enabled, guards are dispatched instantly whenever the player enters the camera's view — no stealing required.")]
+    public bool isNightTime = false;
+
     [Header("Visualization")]
     [Tooltip("Colour of the FOV cone outline when idle.")]
     public Color idleColor    = new Color(1f, 0.92f, 0f, 0.85f);
@@ -63,7 +67,8 @@ public class SecurityCamera : MonoBehaviour
     // Track the score at the time of the last alert so we detect each NEW steal separately.
     // Starts at -1 so the first steal (score goes from 0 → positive) always triggers.
     private int  lastAlertedScore = -1;
-    private bool alertPending     = false; // true while the 5-second dispatch delay is running
+    private bool alertPending     = false; // true while the dispatch delay is running
+    private bool nightAlertSent   = false; // prevents night-mode from spamming every frame
 
     // Visualization
     private LineRenderer            rimRenderer;
@@ -91,8 +96,21 @@ public class SecurityCamera : MonoBehaviour
         // Cone is red while the player is detected OR while a dispatch is pending
         SetVisualizationColor((isPlayerInView || alertPending) ? detectedColor : idleColor);
 
-        // Trigger on every new steal that happens while the player is in view.
-        if (isPlayerInView && playerController.score > lastAlertedScore && playerController.hasStolenSomething)
+        // ── Night-time mode: instant alert on sight, no stealing needed ──
+        if (isNightTime && isPlayerInView && !nightAlertSent && !alertPending)
+        {
+            nightAlertSent = true;
+            TriggerAlert();
+        }
+
+        // Reset the night flag once the player leaves view so re-entry triggers again
+        if (isNightTime && !isPlayerInView)
+        {
+            nightAlertSent = false;
+        }
+
+        // ── Normal mode: trigger on every new steal that happens in view ──
+        if (!isNightTime && isPlayerInView && playerController.score > lastAlertedScore && playerController.hasStolenSomething)
         {
             TriggerAlert();
         }

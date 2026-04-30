@@ -18,7 +18,7 @@ public class Guard : MonoBehaviour
 
     [Tooltip("How long the player must stay inside the vision collider before the guard enters chase mode. " +
              "Gives the player a window to duck out of sight.")]
-    public float chaseGraceTime = 0.5f;
+    public float chaseGraceTime = 0.15f;
     private float visionGraceTimer = 0f;  // counts UP while player is continuously in vision
 
     [Header("Detection Details")]

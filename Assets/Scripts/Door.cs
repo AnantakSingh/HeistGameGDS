@@ -63,7 +63,7 @@ public class Door : MonoBehaviour
         if (playerController == null)
             Debug.LogWarning("[Door] PlayerController not found in scene.");
 
-        if (promptUI != null) promptUI.SetActive(false);
+        if (promptText != null) promptText.gameObject.SetActive(false);
     }
 
     void Update()
