@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 velocity;
     private float verticalLookRotation = 0f;
     private bool isSneaking = false;
-    private bool isGameOver = false; // Set true on game over to stop the alarm flash
+    public bool isGameOver = false; // Set true on game over to stop the alarm flash
     private Guard[] allGuards; // Cache all guards in the scene
     private SecurityCamera[] allCameras; // Cache all security cameras in the scene
 
@@ -164,6 +164,14 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (isGameOver)
+        {
+            // Ensure cursor stays unlocked during game over
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;
+        }
+
         HandleMouseLook();
         HandleMovement();
         HandleInventoryUI();
@@ -452,25 +460,28 @@ public class PlayerController : MonoBehaviour
             AudioSource.PlayClipAtPoint(gameOverSound, cameraTarget != null ? cameraTarget.position : transform.position);
         }
         
-        // Enable Game Over UI right before pausing time
+        // Enable the background panel FIRST so it's behind other UI elements in the draw order
+        if (endBackgroundObject != null)
+        {
+            endBackgroundObject.SetActive(true);
+        }
+
+        // Enable Game Over UI
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(true);
         }
         
-        // Enable the play again button
+        // Enable the play again button LAST so it's on top and clickable
         if (playAgainButton != null)
         {
             playAgainButton.SetActive(true);
-        }
-        
-        // Enable the background panel
-        if (endBackgroundObject != null)
-        {
-            endBackgroundObject.SetActive(true);
+            // Move to the front of the hierarchy to ensure it's not blocked by other UI
+            playAgainButton.transform.SetAsLastSibling();
         }
         
         // Unlock mouse so they can click the button
+        isGameOver = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         
@@ -479,13 +490,18 @@ public class PlayerController : MonoBehaviour
 
     public void RestartGame()
     {
+        Debug.Log("RestartGame called - Reloading scene: " + SceneManager.GetActiveScene().name);
         Time.timeScale = 1f;
-        SceneManager.LoadScene(restartLevelIndex); // Reload the designated restart level
+        isGameOver = false; // Reset flag before loading
+        // Reload the current active scene so the player can retry the level immediately
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void LoadNextLevel()
     {
+        Debug.Log("LoadNextLevel called - Loading scene index: " + nextLevelIndex);
         Time.timeScale = 1f;
+        isGameOver = false; // Reset flag before loading
         SceneManager.LoadScene(nextLevelIndex);
     }
 

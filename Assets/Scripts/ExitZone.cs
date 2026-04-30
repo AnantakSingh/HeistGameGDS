@@ -47,7 +47,7 @@ public class ExitZone : MonoBehaviour
         PlayerController player = other.GetComponent<PlayerController>();
         if (player == null) return;
 
-        if (player.score >= minimumScore && player.hasStolenSomething)
+        if (player.score >= minimumScore)
         {
             // Score requirement met — complete the level
             TriggerComplete(player);
@@ -97,8 +97,12 @@ public class ExitZone : MonoBehaviour
             player.gameFinishUI.SetActive(true);
 
         if (player.playNextLevelButton != null)
+        {
             player.playNextLevelButton.SetActive(true);
+            player.playNextLevelButton.transform.SetAsLastSibling();
+        }
 
+        player.isGameOver = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible   = true;
         Time.timeScale   = 0f;
