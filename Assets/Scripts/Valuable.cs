@@ -39,8 +39,9 @@ public class Valuable : MonoBehaviour
             // Add to score
             playerController.AddScore(value);
             
-            // Trigger the global stolen state so guards will attack
-            playerController.hasStolenSomething = true; 
+            // Notify every guard — only those with LOS right now will witness the theft
+            foreach (Guard guard in FindObjectsOfType<Guard>())
+                guard.AlertIfWitnessingTheft();
             
             // Clean up the UI before destroying
             if (interactUI != null) // Keep it clean

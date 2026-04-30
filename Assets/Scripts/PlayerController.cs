@@ -100,6 +100,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 velocity;
     private float verticalLookRotation = 0f;
     private bool isSneaking = false;
+    private bool isGameOver = false; // Set true on game over to stop the alarm flash
     private Guard[] allGuards; // Cache all guards in the scene
     private SecurityCamera[] allCameras; // Cache all security cameras in the scene
 
@@ -231,6 +232,44 @@ public class PlayerController : MonoBehaviour
             {
                 alarmScreenElement.SetActive(false);
             }
+        }
+    }
+
+    void HandleAlarmUI()
+    {
+        if (alarmScreenElement == null || isGameOver) return;
+
+        bool isGuardClose = false;
+
+        // Check if any alerted guard is within 12 units
+        foreach (Guard guard in allGuards)
+        {
+            if (guard != null && guard.IsAlerted && Vector3.Distance(transform.position, guard.transform.position) <= 12f)
+            {
+                isGuardClose = true;
+                break;
+            }
+        }
+
+        if (isGuardClose)
+        {
+            alarmScreenElement.SetActive(true);
+
+            float pulse = 0.5f + Mathf.Sin(Time.time * alarmFlashSpeed) * 0.3f;
+
+            if (alarmCanvasGroup != null)
+                alarmCanvasGroup.alpha = pulse;
+            else if (alarmImage != null)
+            {
+                Color c = alarmImage.color;
+                c.a = pulse;
+                alarmImage.color = c;
+            }
+        }
+        else
+        {
+            if (alarmScreenElement.activeSelf)
+                alarmScreenElement.SetActive(false);
         }
     }
 
@@ -433,6 +472,12 @@ public class PlayerController : MonoBehaviour
 
     public void TriggerGameOver()
     {
+        if (isGameOver) return; // Prevent double-triggering
+        isGameOver = true;
+
+        // Hide the alarm flash immediately so it doesn't show on the game over screen
+        if (alarmScreenElement != null) alarmScreenElement.SetActive(false);
+
         Debug.Log("Game Over!");
         
         if (gameOverSound != null)

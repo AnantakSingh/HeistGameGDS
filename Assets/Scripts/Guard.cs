@@ -90,6 +90,9 @@ public class Guard : MonoBehaviour
     // Tracks if player is currently inside the vision trigger box
     private bool isPlayerInVision = false;
 
+    // Set to true when this specific guard had LOS at the moment of a theft
+    private bool witnessedTheft = false;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -126,8 +129,8 @@ public class Guard : MonoBehaviour
                 }
 
                 bool isRunning = playerSpeed > 5f;
-                bool isDoingSomethingSuspicious = playerController.hasStolenSomething || isRunning;
-                bool permanentLookout = SecurityCamera.CameraAlertTriggered;
+
+                bool cameraAlerted = SecurityCamera.CameraAlertTriggered;
 
                 // 1. Can we SEE the player? (FOV + Raycast)
                 // 2. Can we HEAR the player? (Close proximity + Running)
@@ -135,7 +138,10 @@ public class Guard : MonoBehaviour
                 float distToPlayer = Vector3.Distance(transform.position, playerTransform.position);
                 bool canHear = isRunning && distToPlayer <= hearingDistance;
 
-                if ((canSee && (isDoingSomethingSuspicious || permanentLookout)) || canHear)
+                // Chase only if THIS guard personally witnessed a theft,
+                // a camera flagged an alert (and guard can now see player), or hears running.
+                bool seenWhileSuspicious = canSee && (witnessedTheft || cameraAlerted);
+                if (seenWhileSuspicious || canHear)
                 {
                     // Count up while player stays in vision/hearing — only chase after the grace period
                     visionGraceTimer += Time.deltaTime;
@@ -319,6 +325,20 @@ public class Guard : MonoBehaviour
             {
                 stateIndicator.material.color = Color.green;
             }
+        }
+    }
+
+    /// <summary>
+    /// Called by theft scripts (Valuable, Key) at the exact moment of theft.
+    /// If this guard currently has line of sight to the player, they witness the theft
+    /// and will chase on sight from now on.
+    /// </summary>
+    public void AlertIfWitnessingTheft()
+    {
+        if (CanSeePlayer())
+        {
+            witnessedTheft = true;
+            Debug.Log($"[Guard] '{name}' witnessed the theft!");
         }
     }
 

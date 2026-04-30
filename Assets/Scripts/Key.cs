@@ -45,8 +45,9 @@ public class Key : MonoBehaviour
             // Add key to inventory (keys are used for doors, not score)
             playerController.keyCount++;
             
-            // Trigger the global stolen state so guards will attack
-            playerController.hasStolenSomething = true; 
+            // Notify every guard — only those with LOS right now will witness the theft
+            foreach (Guard guard in FindObjectsOfType<Guard>())
+                guard.AlertIfWitnessingTheft();
             
             // Clean up the UI before the key destroys itself
             if (spawnedUI != null)
