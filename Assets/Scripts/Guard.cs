@@ -205,7 +205,8 @@ public class Guard : MonoBehaviour
                     }
                 }
 
-                // If the player is seen or heard while investigating, give them the grace period to hide
+                // Guards are already on high alert while investigating a camera alert,
+                // so they chase INSTANTLY if they see or hear the player — no grace period.
                 bool isRunningInv = playerController.GetComponent<CharacterController>().velocity.magnitude > 5f;
                 bool canSeeInv = CanSeePlayer();
                 float distToPlayerInv = Vector3.Distance(transform.position, playerTransform.position);
@@ -213,18 +214,10 @@ public class Guard : MonoBehaviour
 
                 if (canSeeInv || canHearInv)
                 {
-                    visionGraceTimer += Time.deltaTime;
-                    if (visionGraceTimer >= chaseGraceTime)
-                    {
-                        visionGraceTimer = 0f;
-                        currentState     = State.Chase;
-                        agent.speed      = chaseSpeed;
-                        chaseTimer       = chaseLingerTime;
-                    }
-                }
-                else
-                {
                     visionGraceTimer = 0f;
+                    currentState     = State.Chase;
+                    agent.speed      = chaseSpeed;
+                    chaseTimer       = chaseLingerTime;
                 }
                 break;
 

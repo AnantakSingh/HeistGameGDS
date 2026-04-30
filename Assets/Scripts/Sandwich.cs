@@ -5,7 +5,6 @@ public class Sandwich : MonoBehaviour
     [Header("Sandwich Settings")]
     public float speedBoostAmount = 2f;
     public float jumpBoostAmount = 1f;
-    public float pickupRadius = 2f;
     public float rotationSpeed = 45f;
     
     [Header("Audio")]
@@ -16,7 +15,7 @@ public class Sandwich : MonoBehaviour
     public GameObject interactUI;
 
     private PlayerController playerController;
-    private bool wasInRange = false;
+    private bool inRange = false;
 
     private void Start()
     {
@@ -34,23 +33,6 @@ public class Sandwich : MonoBehaviour
         transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime, Space.World);
 
         if (playerController == null) return;
-
-        float distance = Vector3.Distance(transform.position, playerController.transform.position);
-        bool inRange = distance <= pickupRadius;
-        
-        if (interactUI != null)
-        {
-            if (inRange && !wasInRange)
-            {
-                interactUI.SetActive(true);
-                wasInRange = true;
-            }
-            else if (!inRange && wasInRange)
-            {
-                interactUI.SetActive(false);
-                wasInRange = false;
-            }
-        }
 
         if (inRange && (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0)))
         {
@@ -77,6 +59,26 @@ public class Sandwich : MonoBehaviour
             }
             
             Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<PlayerController>() != null)
+        {
+            inRange = true;
+            if (interactUI != null)
+                interactUI.SetActive(true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<PlayerController>() != null)
+        {
+            inRange = false;
+            if (interactUI != null)
+                interactUI.SetActive(false);
         }
     }
 }

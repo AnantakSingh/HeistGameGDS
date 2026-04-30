@@ -81,6 +81,12 @@ public class PlayerController : MonoBehaviour
     // Tracks the earliest time at which the overlay is allowed to hide
     private float _cameraOverlayHideTime = 0f;
 
+    [Header("Timer")]
+    [Tooltip("Drag your screen-space Timer TextMeshProUGUI here. Displays elapsed time as MM:SS.")]
+    public TMPro.TextMeshProUGUI timerText;
+
+    private float elapsedTime = 0f;
+
     public void AddScore(int amount)
     {
         score += amount;
@@ -153,6 +159,7 @@ public class PlayerController : MonoBehaviour
         HandleInventoryUI();
         HandleAlarmUI();
         HandleCameraOverlayUI();
+        HandleTimer();
     }
 
     void HandleCameraOverlayUI()
@@ -225,6 +232,16 @@ public class PlayerController : MonoBehaviour
                 alarmScreenElement.SetActive(false);
             }
         }
+    }
+
+    void HandleTimer()
+    {
+        if (timerText == null) return;
+
+        elapsedTime += Time.deltaTime;
+        int minutes = Mathf.FloorToInt(elapsedTime / 60f);
+        int seconds = Mathf.FloorToInt(elapsedTime % 60f);
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     void HandleInventoryUI()

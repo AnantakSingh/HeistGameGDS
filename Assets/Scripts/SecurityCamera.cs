@@ -312,6 +312,28 @@ public class SecurityCamera : MonoBehaviour
         }
     }
 
+    void SetVisualizationEnabled(bool enabled)
+    {
+        if (rimRenderer != null)
+            rimRenderer.enabled = enabled;
+
+        foreach (LineRenderer s in spokeRenderers)
+        {
+            if (s != null)
+                s.enabled = enabled;
+        }
+    }
+
+    void OnDisable()
+    {
+        SetVisualizationEnabled(false);
+    }
+
+    void OnEnable()
+    {
+        SetVisualizationEnabled(true);
+    }
+
     // ── Editor Gizmos ──────────────────────────────────────────────────────────
 #if UNITY_EDITOR
     void OnDrawGizmos()
