@@ -40,6 +40,13 @@ public class Sandwich : MonoBehaviour
             
             // Add to player score
             playerController.AddScore(10);
+
+            // Notify every guard — only those with LOS right now will witness the theft
+            foreach (Guard guard in FindObjectsOfType<Guard>())
+                guard.AlertIfWitnessingTheft();
+
+            // Trigger the global stolen state so cameras and guards respond
+            playerController.hasStolenSomething = true;
             
             // Pick a random stat to boost (0 = Speed, 1 = Jump)
             int randomChoice = Random.Range(0, 2);

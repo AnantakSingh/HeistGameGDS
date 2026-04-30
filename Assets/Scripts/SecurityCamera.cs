@@ -21,6 +21,8 @@ public class SecurityCamera : MonoBehaviour
     {
         // Reset the static alert flag whenever a new scene is loaded
         CameraAlertTriggered = false;
+        lastAlertedScore     = -1;
+        lastAlertedKeyCount  = -1;
     }
 
     // ── Inspector fields ───────────────────────────────────────────────────────
@@ -72,8 +74,11 @@ public class SecurityCamera : MonoBehaviour
 
     // Track the score at the time of the last alert so we detect each NEW steal separately.
     // Starts at -1 so the first steal (score goes from 0 → positive) always triggers.
-    private int  lastAlertedScore = -1;
-    private bool alertPending     = false; // true while the dispatch delay is running
+    // Static so multiple cameras don't fire for the same theft.
+    private static int  lastAlertedScore    = -1;
+    private static int  lastAlertedKeyCount = -1;
+
+    private bool alertPending        = false; // true while the dispatch delay is running
     private bool nightAlertSent   = false; // prevents night-mode from spamming every frame
 
     // Visualization
@@ -115,10 +120,16 @@ public class SecurityCamera : MonoBehaviour
             nightAlertSent = false;
         }
 
-        // ── Normal mode: trigger on every new steal that happens in view ──
-        if (!isNightTime && isPlayerInView && playerController.score > lastAlertedScore && playerController.hasStolenSomething)
+        // ── Normal mode: trigger on every new steal (score OR key change) that happens in view ──
+        bool scoreIncreased = playerController.score > lastAlertedScore;
+        bool keysIncreased  = playerController.keyCount > lastAlertedKeyCount;
+
+        if (!isNightTime && isPlayerInView && (scoreIncreased || keysIncreased) && playerController.hasStolenSomething)
         {
             TriggerAlert();
+            // Update baseline immediately so other cameras don't fire for the same frame
+            lastAlertedScore    = playerController.score;
+            lastAlertedKeyCount = playerController.keyCount;
         }
 
         // Only sync the score baseline while the player IS in view.
@@ -129,7 +140,8 @@ public class SecurityCamera : MonoBehaviour
         // the player next appears in view.
         if (isPlayerInView)
         {
-            lastAlertedScore = playerController.score;
+            lastAlertedScore    = playerController.score;
+            lastAlertedKeyCount = playerController.keyCount;
         }
     }
 
@@ -195,7 +207,7 @@ public class SecurityCamera : MonoBehaviour
         // Snapshot the player's position at the moment of the steal
         Vector3 stealPosition = playerTransform.position;
 
-        Debug.Log($"[SecurityCamera] '{name}' caught the player stealing! Guards dispatching in 5 seconds...");
+        Debug.Log($"[SecurityCamera] '{name}' caught the player stealing! Guards dispatching in 2 seconds...");
         StartCoroutine(DispatchGuardsDelayed(stealPosition, 2f));
     }
 

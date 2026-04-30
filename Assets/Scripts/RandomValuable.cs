@@ -50,6 +50,10 @@ public class RandomValuable : MonoBehaviour
             // Add to score
             playerController.AddScore(value);
 
+            // Notify every guard — only those with LOS right now will witness the theft
+            foreach (Guard guard in FindObjectsOfType<Guard>())
+                guard.AlertIfWitnessingTheft();
+
             // Trigger the global stolen state so guards will attack
             playerController.hasStolenSomething = true;
 

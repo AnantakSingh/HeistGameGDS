@@ -48,6 +48,9 @@ public class Key : MonoBehaviour
             // Notify every guard — only those with LOS right now will witness the theft
             foreach (Guard guard in FindObjectsOfType<Guard>())
                 guard.AlertIfWitnessingTheft();
+
+            // Trigger the global stolen state so cameras and guards respond
+            playerController.hasStolenSomething = true;
             
             // Clean up the UI before the key destroys itself
             if (spawnedUI != null)

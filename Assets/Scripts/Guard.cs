@@ -194,8 +194,7 @@ public class Guard : MonoBehaviour
                 break;
 
             case State.Investigate:
-                agent.isStopped = false;
-                agent.SetDestination(investigateTarget);
+                // Note: InvestigateTarget and SetDestination are handled in InvestigatePoint()
 
                 // Once we arrive, wait briefly then return to roam
                 if (!agent.pathPending && agent.remainingDistance < 0.5f)
@@ -228,8 +227,12 @@ public class Guard : MonoBehaviour
                 break;
 
             case State.Chase:
-                // Follow the player
-                agent.SetDestination(playerTransform.position);
+                // Follow the player - only update destination if the player has moved significantly
+                // to avoid stuttering from constant path recalculations.
+                if (Vector3.Distance(agent.destination, playerTransform.position) > 0.5f)
+                {
+                    agent.SetDestination(playerTransform.position);
+                }
                 
                 // Track chase persistence
                 // Guard stays in chase as long as they can see/hear the player, or during the linger period
