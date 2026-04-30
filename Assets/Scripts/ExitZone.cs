@@ -26,6 +26,10 @@ public class ExitZone : MonoBehaviour
     public AudioClip gameFinishSound;
     public AudioClip exitLockedSound;
 
+    [Header("Win Screen")]
+    [Tooltip("Drag the 2D UI image/panel to show as the win screen background here.")]
+    public GameObject winScreenUI;
+
     // ── Runtime ───────────────────────────────────────────────────────────────
     private bool triggered = false;  // prevent double-triggering
 
@@ -85,14 +89,15 @@ public class ExitZone : MonoBehaviour
         if (gameFinishSound != null)
             AudioSource.PlayClipAtPoint(gameFinishSound, transform.position);
 
+        // Show the win screen image
+        if (winScreenUI != null)
+            winScreenUI.SetActive(true);
+
         if (player.gameFinishUI != null)
             player.gameFinishUI.SetActive(true);
 
         if (player.playAgainButton != null)
             player.playAgainButton.SetActive(true);
-
-        if (player.endBackgroundObject != null)
-            player.endBackgroundObject.SetActive(true);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible   = true;
