@@ -24155,7 +24155,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1447730899}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -25202,7 +25202,8 @@ MonoBehaviour:
   gameFinishUI: {fileID: 774567249}
   playAgainButton: {fileID: 274960473}
   playNextLevelButton: {fileID: 683666252}
-  nextLevelIndex: 4
+  nextLevelIndex: 3
+  restartLevelIndex: 3
   endBackgroundObject: {fileID: 114644110}
   jumpBoostText: {fileID: 181396673}
   speedBoostText: {fileID: 1564699090}
@@ -33784,7 +33785,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1876278540}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -38383,7 +38384,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2074985828}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

@@ -24156,7 +24156,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1447730899}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -25204,6 +25204,7 @@ MonoBehaviour:
   playAgainButton: {fileID: 274960473}
   playNextLevelButton: {fileID: 683666252}
   nextLevelIndex: 3
+  restartLevelIndex: 2
   endBackgroundObject: {fileID: 114644110}
   jumpBoostText: {fileID: 181396673}
   speedBoostText: {fileID: 1564699090}
@@ -29718,7 +29719,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PRESS E TO DISABLE CAMERA FOR 5 SECONDS
+  m_text: PRESS E TO DISABLE CAMERA FOR 10 SECONDS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e35416403b45ab14db54e61c3d1d7e23, type: 2}
   m_sharedMaterial: {fileID: -3084222927770644967, guid: e35416403b45ab14db54e61c3d1d7e23, type: 2}
@@ -33785,7 +33786,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1876278540}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -38460,7 +38461,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2074985828}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

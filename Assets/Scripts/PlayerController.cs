@@ -49,6 +49,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Build index of the next level scene to load when the player wins.")]
     public int nextLevelIndex = 1;
     
+    [Tooltip("Build index of the scene to load when the player restarts (e.g. your main level index).")]
+    public int restartLevelIndex = 0;
+    
     [Tooltip("Drag an optional object here to enable when the game ends (e.g. background panel)")]
     public GameObject endBackgroundObject;
     
@@ -477,7 +480,7 @@ public class PlayerController : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reload current level
+        SceneManager.LoadScene(restartLevelIndex); // Reload the designated restart level
     }
 
     public void LoadNextLevel()
